@@ -17,7 +17,6 @@ public class Tournament<T extends Team, M extends Match> {
         this.matches = new ArrayList<>();
     }
 
-    // Methods to add teams and matches
     public void addTeam(T team) {
         teams.add(team);
     }

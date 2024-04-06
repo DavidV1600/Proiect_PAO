@@ -4,7 +4,7 @@ import Proiect_PAO.Matches.FootballMatch;
 import Proiect_PAO.Teams.FootballTeam;
 
 public class FootballTournament extends Tournament<FootballTeam, FootballMatch> {
-    private String location; // e.g., "London", "Manchester"
+    private String location;
     private String organizer;
 
     public FootballTournament(String name, String location, String organizer) {

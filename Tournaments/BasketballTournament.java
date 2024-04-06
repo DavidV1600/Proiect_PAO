@@ -4,7 +4,7 @@ import Proiect_PAO.Matches.BasketballMatch;
 import Proiect_PAO.Teams.BasketballTeam;
 
 public class BasketballTournament extends Tournament<BasketballTeam, BasketballMatch> {
-    private String type; // e.g., "Regional", "National"
+    private String type;
     private String sponsor;
 
     public BasketballTournament(String name, String type, String sponsor) {
