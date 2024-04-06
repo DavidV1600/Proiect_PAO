@@ -1,6 +1,6 @@
 package Proiect_PAO.Players;
 
-public class Player {
+public class Player implements Comparable<Player>{
     private String name;
     private int age;
 
@@ -31,5 +31,10 @@ public class Player {
                 "name='" + name + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Player player) {
+        return this.name.compareTo(player.getName());
     }
 }

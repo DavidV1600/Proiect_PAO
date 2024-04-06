@@ -2,30 +2,26 @@ package Proiect_PAO.Teams;
 
 import Proiect_PAO.Players.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Team {
     private String name;
-    private List<Player> players;
+    private Set<Player> players;
 
     public Team(String name) {
         this.name = name;
-        this.players = new ArrayList<>();
+    this.players = new TreeSet<>();
     }
 
-    // Add a player to the team
     public void addPlayer(Player player) {
         players.add(player);
     }
 
-    // Remove a player from the team
     public void removePlayer(Player player) {
         players.remove(player);
     }
 
-    // Get all players in the team
-    public List<Player> getPlayers() {
+    public Set<Player> getPlayers() {
         return players;
     }
 
@@ -45,7 +41,7 @@ public class Team {
         this.name = name;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(Set<Player> players) {
         this.players = players;
     }
 }
