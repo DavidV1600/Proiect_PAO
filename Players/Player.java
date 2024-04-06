@@ -27,10 +27,8 @@ public class Player implements Comparable<Player>{
 
     @Override
     public String toString() {
-        return "Player{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                '}';
+        return "Name: " + name +
+                "\nAge: " + age;
     }
 
     @Override

@@ -4,13 +4,16 @@ import Proiect_PAO.Players.Player;
 
 import java.util.*;
 
-public class Team {
+public class Team implements Comparable<Team>{
     private String name;
     private Set<Player> players;
+
+    private int wins;
 
     public Team(String name) {
         this.name = name;
     this.players = new TreeSet<>();
+    wins = 0;
     }
 
     public void addPlayer(Player player) {
@@ -27,10 +30,12 @@ public class Team {
 
     @Override
     public String toString() {
-        return "Team{" +
-                "name='" + name + '\'' +
-                ", players=" + players +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Team name: ").append(name).append("\nPlayers:\n");
+        for (Player player : players){
+            stringBuilder.append(player.getName()).append(", ");
+        }
+        return stringBuilder.toString();
     }
 
     public String getName() {
@@ -43,5 +48,28 @@ public class Team {
 
     public void setPlayers(Set<Player> players) {
         this.players = players;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public void incrementWins(){
+        this.wins++;
+    }
+
+    @Override
+    public int compareTo(Team o) {
+        if(this.wins > o.wins){
+            return 1;
+        } else if(this.wins < o.wins){
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

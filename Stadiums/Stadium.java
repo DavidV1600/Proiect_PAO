@@ -12,11 +12,9 @@ public class Stadium {
     }
     @Override
     public String toString() {
-        return "Stadium{" +
-                "name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", capacity=" + capacity +
-                '}';
+        return "Stadium name: " + name +
+                "\nLocation: " + location +
+                "\nCapacity" + capacity;
     }
 
     public String getName() {

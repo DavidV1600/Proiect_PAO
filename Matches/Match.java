@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 public class Match {
     private Team teamA;
     private Team teamB;
+    private int teamAScore;
+    private int teamBScore;
     private LocalDateTime dateTime;
 
     public Match(Team teamA, Team teamB, LocalDateTime dateTime) {
@@ -14,13 +16,18 @@ public class Match {
         this.teamB = teamB;
         this.dateTime = dateTime;
     }
+
+    public Match(Team teamA, Team teamB) {
+        this.teamA = teamA;
+        this.teamB = teamB;
+    }
+
     @Override
     public String toString() {
-        return "Match{" +
-                "homeTeam=" + teamA.getName() +
-                ", awayTeam=" + teamB.getName() +
-                ", dateTime=" + dateTime +
-                '}';
+        return  teamA.getName() +
+                " -VS- " +
+                teamB.getName() +
+                "\nDate: " + dateTime;
     }
 
     public LocalDateTime getDateTime() {
@@ -45,6 +52,22 @@ public class Match {
 
     public void setTeamB(Team teamB) {
         this.teamB = teamB;
+    }
+
+    public int getTeamAScore() {
+        return teamAScore;
+    }
+
+    public void setTeamAScore(int teamAScore) {
+        this.teamAScore = teamAScore;
+    }
+
+    public int getTeamBScore() {
+        return teamBScore;
+    }
+
+    public void setTeamBScore(int teamBScore) {
+        this.teamBScore = teamBScore;
     }
 }
 

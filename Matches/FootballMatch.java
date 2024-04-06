@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class FootballMatch extends Match {
     private int teamAScore;
-    private int teamBScore;
+    private int teamBScore;//trebuie modificat ca am pus deja in clasa de baza scorurile
 
     public FootballMatch(Team teamA, Team teamB, LocalDateTime dateTime, int teamAScore, int teamBScore) {
         super(teamA, teamB, dateTime);
