@@ -32,5 +32,30 @@ public class TournamentService<T extends Team, M extends Match> {
         return tournaments;
     }
 
+    public void displayAllTournaments() {
+        System.out.println("All Tournaments:");
+        for (int i = 0; i < tournaments.size(); i++) {
+            System.out.println((i + 1) + ". " + tournaments.get(i).getName());
+        }
+    }
+    public boolean deleteTournamentByName(String name) {
+        for (Tournament<T, M> tournament : tournaments) {
+            if (tournament.getName().equals(name)) {
+                tournaments.remove(tournament);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Tournament<T, M> getTournamentByName(String name) {
+        for (Tournament<T, M> tournament : tournaments) {
+            if (tournament.getName().equals(name)) {
+                return tournament;
+            }
+        }
+        return null;
+    }
+
 }
 

@@ -75,7 +75,7 @@ public class Tournament<T extends Team, M extends Match> {
         match.setTeamBScore(teamBScore);
     }
 
-    public void printFinalStandings() {
+    public void printStandings() {
         for (M match : matches) {
             T homeTeam = (T) match.getTeamA();
             T awayTeam = (T) match.getTeamB();
@@ -89,12 +89,42 @@ public class Tournament<T extends Team, M extends Match> {
         Collections.sort(teams);
         Collections.reverse(teams);
 
-        System.out.println("Final Standings for Tournament: " + name);
+        System.out.println("Standings for Tournament: " + name);
         int rank = 1;
         for (T team : teams) {
             System.out.println(rank + ". " + team.getName() + " - Wins: " + team.getWins());
             rank++;
         }
     }
+
+    public void removeTeam(Scanner scanner) {
+        System.out.println("Enter team name to be removed: ");
+        String teamName = scanner.nextLine();
+        Iterator<T> iterator = teams.iterator();
+        while (iterator.hasNext()) {
+            T team = iterator.next();
+            if (team.getName().equals(teamName)) {
+                iterator.remove();
+                return;
+            }
+        }
+        System.out.println("Team name not found!");
+    }
+
+    public void displayTeams() {
+        System.out.println("Teams in Tournament '" + name + "':");
+        for (T team : teams) {
+            System.out.println("- " + team.getName());
+        }
+    }
+
+    public void displayMatches() {
+        System.out.println("Matches in Tournament '" + name + "':");
+        for (M match : matches) {
+            System.out.println("- " + match.toString());
+        }
+    }
+
+
 
 }

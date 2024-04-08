@@ -40,51 +40,8 @@ import java.time.LocalDateTime;
 public class Main {
     public static void main(String[] args) {
 
-        PlayerService playerService = new PlayerService();
-        TeamService teamService = TeamService.getInstance();
-        TournamentService<Team, Match> tournamentService = TournamentService.getInstance();
-
-        Player player1 = new Player("Adi Popescu", 25);
-        Player player2 = new Player("Marius Ionescu", 28);
-        playerService.addPlayer(player1);
-        playerService.addPlayer(player2);
-
-        Team team1 = new Team("Team A");
-        Team team2 = new Team("Team B");
-        team1.addPlayer(player1);
-        team1.addPlayer(player2);
-        teamService.addTeam(team1);
-        teamService.addTeam(team2);
-
-        Tournament<Team, Match> tournament1 = new Tournament<>("Tournament 1");
-        tournament1.addTeam(team1);
-        tournament1.addTeam(team2);
-        tournament1.generateMatches();
-
-        Tournament<Team, Match> tournament2 = new Tournament<>("Tournament 2");
-        tournament2.addTeam(team1);
-        tournament2.addTeam(team2);
-        tournament2.generateMatches();
-        tournamentService.addTournament(tournament1);
-        tournamentService.addTournament(tournament2);
-
-        tournament1.setMatchScore(tournament1.getMatches().get(0), 1, 0);
-        tournament1.printFinalStandings();
-
-        System.out.println("All players:");
-        for (Player player : playerService.getAllPlayers()) {
-            System.out.println(player);
-        }
-
-        System.out.println("\nAll teams:");
-        for (Team team : teamService.getAllTeams()) {
-            System.out.println(team);
-        }
-
-        System.out.println("\nAll tournaments:");
-        for (Tournament<Team, Match> tournament : tournamentService.getAllTournaments()) {
-            System.out.println(tournament);
-        }
+        ActionsManager manager = ActionsManager.getInstance();
+        manager.startMenu();
     }
 }
 

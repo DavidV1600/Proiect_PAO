@@ -62,6 +62,12 @@ public class Team implements Comparable<Team>{
         this.wins++;
     }
 
+    public static Team createTeamFromInput(Scanner scanner){
+        System.out.println("Enter team name: ");
+        String teamName = scanner.nextLine();
+        return new Team(teamName);
+    }
+
     @Override
     public int compareTo(Team o) {
         if(this.wins > o.wins){
