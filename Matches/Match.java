@@ -1,5 +1,6 @@
 package Proiect_PAO.Matches;
 
+import Proiect_PAO.Stadiums.Stadium;
 import Proiect_PAO.Teams.Team;
 
 import java.time.LocalDateTime;
@@ -10,11 +11,21 @@ public class Match {
     private int teamAScore;
     private int teamBScore;
     private LocalDateTime dateTime;
+    private Stadium stadium;
 
-    public Match(Team teamA, Team teamB, LocalDateTime dateTime) {
+    public Stadium getStadium() {
+        return stadium;
+    }
+
+    public void setStadium(Stadium stadium) {
+        this.stadium = stadium;
+    }
+
+    public Match(Team teamA, Team teamB, LocalDateTime dateTime, Stadium stadium) {
         this.teamA = teamA;
         this.teamB = teamB;
         this.dateTime = dateTime;
+        this.stadium = stadium;
     }
 
     public Match(Team teamA, Team teamB) {

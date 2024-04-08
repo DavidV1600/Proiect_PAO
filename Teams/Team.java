@@ -69,7 +69,7 @@ public class Team implements Comparable<Team>{
         } else if(this.wins < o.wins){
             return -1;
         } else {
-            return 0;
+            return this.name.compareTo(o.name);//if their score is equal then sort them alphabetically
         }
     }
 }

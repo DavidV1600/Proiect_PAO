@@ -35,6 +35,8 @@ import Proiect_PAO.Players.PlayerService;
 import Proiect_PAO.Teams.TeamService;
 import Proiect_PAO.Tournaments.TournamentService;
 
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -49,13 +51,25 @@ public class Main {
 
         Team team1 = new Team("Team A");
         Team team2 = new Team("Team B");
+        team1.addPlayer(player1);
+        team1.addPlayer(player2);
         teamService.addTeam(team1);
         teamService.addTeam(team2);
 
         Tournament<Team, Match> tournament1 = new Tournament<>("Tournament 1");
+        tournament1.addTeam(team1);
+        tournament1.addTeam(team2);
+        tournament1.generateMatches();
+
         Tournament<Team, Match> tournament2 = new Tournament<>("Tournament 2");
+        tournament2.addTeam(team1);
+        tournament2.addTeam(team2);
+        tournament2.generateMatches();
         tournamentService.addTournament(tournament1);
         tournamentService.addTournament(tournament2);
+
+        tournament1.setMatchScore(tournament1.getMatches().get(0), 1, 0);
+        tournament1.printFinalStandings();
 
         System.out.println("All players:");
         for (Player player : playerService.getAllPlayers()) {

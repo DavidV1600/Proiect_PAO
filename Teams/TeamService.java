@@ -7,12 +7,10 @@ public class TeamService {
     private static TeamService instance;
     private List<Team> teams;
 
-    // Private constructor to prevent instantiation from outside
     private TeamService() {
         teams = new ArrayList<>();
     }
 
-    // Static method to get the singleton instance
     public static TeamService getInstance() {
         if (instance == null) {
             instance = new TeamService();
@@ -20,7 +18,6 @@ public class TeamService {
         return instance;
     }
 
-    // Other methods for adding/removing teams, etc.
     public void addTeam(Team team) {
         teams.add(team);
     }

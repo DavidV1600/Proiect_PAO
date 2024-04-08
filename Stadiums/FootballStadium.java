@@ -1,18 +1,20 @@
 package Proiect_PAO.Stadiums;
 
-public class FootballStadium extends Stadium {
-    private String surfaceType;//maybe change to enum
+import Proiect_PAO.Surfaces.FootballSurface;
 
-    public FootballStadium(String name, String location, int capacity, String surfaceType) {
+public class FootballStadium extends Stadium {
+    private FootballSurface surfaceType;//maybe change to enum
+
+    public FootballStadium(String name, String location, int capacity, FootballSurface surfaceType) {
         super(name, location, capacity);
         this.surfaceType = surfaceType;
     }
 
-    public String getSurfaceType() {
+    public FootballSurface getSurfaceType() {
         return surfaceType;
     }
 
-    public void setSurfaceType(String surfaceType) {
+    public void setSurfaceType(FootballSurface surfaceType) {
         this.surfaceType = surfaceType;
     }
 }
