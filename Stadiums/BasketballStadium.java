@@ -1,23 +1,24 @@
 package Proiect_PAO.Stadiums;
 
 import Proiect_PAO.Matches.BasketballMatch;
+import Proiect_PAO.Surfaces.BasketballSurface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BasketballStadium extends Stadium{
-    private String surfaceType;//maybe change to enum
+    private BasketballSurface surfaceType;//maybe change to enum
 
-    public BasketballStadium(String name, String location, int capacity, String surfaceType) {
+    public BasketballStadium(String name, String location, int capacity, BasketballSurface surfaceType) {
         super(name, location, capacity);
         this.surfaceType = surfaceType;
     }
 
-    public String getSurfaceType() {
+    public BasketballSurface getSurfaceType() {
         return surfaceType;
     }
 
-    public void setSurfaceType(String surfaceType) {
+    public void setSurfaceType(BasketballSurface surfaceType) {
         this.surfaceType = surfaceType;
     }
 }

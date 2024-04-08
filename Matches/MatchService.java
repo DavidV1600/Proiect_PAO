@@ -1,5 +1,6 @@
 package Proiect_PAO.Matches;
 
+import Proiect_PAO.Stadiums.Stadium;
 import Proiect_PAO.Teams.Team;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,8 @@ public class MatchService {
         this.matches = new ArrayList<>();
     }
 
-    public void addMatch(Team teamA, Team teamB, LocalDateTime dateTime) {
-        Match match = new Match(teamA, teamB, dateTime);
+    public void addMatch(Team teamA, Team teamB, LocalDateTime dateTime, Stadium stadium) {
+        Match match = new Match(teamA, teamB, dateTime, stadium);
         matches.add(match);
     }
 
