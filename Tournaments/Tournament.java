@@ -1,7 +1,6 @@
 package Proiect_PAO.Tournaments;
 
 import Proiect_PAO.Matches.Match;
-import Proiect_PAO.Matches.MatchService;
 import Proiect_PAO.Teams.Team;
 
 import java.util.*;
@@ -97,7 +96,7 @@ public class Tournament<T extends Team, M extends Match> {
         }
     }
 
-    public void removeTeam(Scanner scanner) {
+    public boolean removeTeam(Scanner scanner) {
         System.out.println("Enter team name to be removed: ");
         String teamName = scanner.nextLine();
         Iterator<T> iterator = teams.iterator();
@@ -105,10 +104,10 @@ public class Tournament<T extends Team, M extends Match> {
             T team = iterator.next();
             if (team.getName().equals(teamName)) {
                 iterator.remove();
-                return;
+                return true;
             }
         }
-        System.out.println("Team name not found!");
+        return false;
     }
 
     public void displayTeams() {
@@ -125,6 +124,38 @@ public class Tournament<T extends Team, M extends Match> {
         }
     }
 
+    public void playMatches(Scanner scanner){
+        for(M match : matches){
+            System.out.println(match);
+            System.out.println("Add score for " + match.getTeamA().getName());
+            int scoreA = scanner.nextInt();
+            System.out.println("Add score for " + match.getTeamB().getName());
+            int scoreB = scanner.nextInt();
+            match.setTeamAScore(scoreA);
+            match.setTeamBScore(scoreB);
+        }
+    }
 
-
+    public void displayTeamsComposition(Scanner scanner){
+        String option;
+        while (true){
+            displayTeams();
+            System.out.println("\nEnter the team name you want too see the composition or enter 0 if you want to exit: ");
+            option = scanner.nextLine();
+            if(option.compareTo("0") == 0)
+                return;
+            Iterator<T> iterator = teams.iterator();
+            boolean teamFound = false;
+            while (iterator.hasNext()) {
+                T team = iterator.next();
+                if (team.getName().equals(option)) {
+                    team.displayMembers();
+                    teamFound = true;
+                }
+            }
+            if(!teamFound){
+                System.out.println("Team name not found");
+            }
+        }
+    }
 }

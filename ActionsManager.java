@@ -58,7 +58,13 @@ public class ActionsManager {
                     displayTournamentStandings(scanner);
                     break;
                 case 9:
-                    displayTournaments(scanner);
+                    displayTournaments();
+                    break;
+                case 10:
+                    generateMatches(scanner);
+                    break;
+                case 11:
+                    playTournaments(scanner);
                     break;
                 case 0:
                     System.out.println("Application closed.");
@@ -76,13 +82,15 @@ public class ActionsManager {
         System.out.println("\n===== Menu =====");
         System.out.println("1. Add tournament");
         System.out.println("2. Delete tournament");
-        System.out.println("3. Update tournament");
+        System.out.println("3. Update tournament name");
         System.out.println("4. Add team to tournament");
         System.out.println("5. Remove team from tournament");
         System.out.println("6. Display teams in tournament");
         System.out.println("7. Display matches in tournament");
         System.out.println("8. Display tournament standings");
         System.out.println("9. Display tournaments");
+        System.out.println("10. Generate matches for tournaments");
+        System.out.println("11. Play tournaments");
         System.out.println("0. Exit");
         System.out.println("================\n");
     }
@@ -136,8 +144,11 @@ public class ActionsManager {
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
-            tournament.removeTeam(scanner);
-            System.out.println("Team removed from tournament successfully.");
+            if (tournament.removeTeam(scanner)) {
+                System.out.println("Team removed from tournament successfully.");
+            } else {
+                System.out.println("Team not name found");
+            }
         } else {
             System.out.println("Tournament not found.");
         }
@@ -149,6 +160,11 @@ public class ActionsManager {
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
             tournament.displayTeams();
+            System.out.println("Want to see players of a team? [y/n]");
+            String wantToSeeTeams = scanner.nextLine();
+            if(wantToSeeTeams.compareTo("y") == 0){
+                tournament.displayTeamsComposition(scanner);
+            }
         } else {
             System.out.println("Tournament not found.");
         }
@@ -176,9 +192,31 @@ public class ActionsManager {
         }
     }
 
-    private void displayTournaments(Scanner scanner){
+    private void displayTournaments(){
         System.out.println("Tournaments: ");
         tournamentService.displayAllTournaments();
+    }
+
+    private void generateMatches(Scanner scanner){
+        System.out.print("Enter tournament name: ");
+        String tournamentName = scanner.nextLine();
+        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
+        if (tournament != null) {
+            tournament.generateMatches();
+        } else {
+            System.out.println("Tournament not found.");
+        }
+    }
+
+    private void playTournaments(Scanner scanner){
+        System.out.print("Enter tournament name: ");
+        String tournamentName = scanner.nextLine();
+        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
+        if (tournament != null) {
+            tournament.playMatches(scanner);
+        } else {
+            System.out.println("Tournament not found.");
+        }
     }
 
 }

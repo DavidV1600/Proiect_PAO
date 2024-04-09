@@ -1,18 +1,20 @@
 package Proiect_PAO.Players;
 
-public class FootballPlayer extends Player {
-    private String position;
+import javax.swing.text.Position;
 
-    public FootballPlayer(String name, int age, String position) {
+public class FootballPlayer extends Player {
+    private Position position;
+
+    public FootballPlayer(String name, int age, Position position) {
         super(name, age);
         this.position = position;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 }
