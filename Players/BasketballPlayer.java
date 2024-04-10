@@ -1,18 +1,20 @@
 package Proiect_PAO.Players;
 
+import javax.swing.text.Position;
+
 public class BasketballPlayer extends Player {
-    private int pointsPerGame;
+    private Position position;
 
-    public BasketballPlayer(String name, int age, int pointsPerGame) {
+    public BasketballPlayer(String name, int age,Position position) {
         super(name, age);
-        this.pointsPerGame = pointsPerGame;
+        this.position = position;
     }
 
-    public int getPointsPerGame() {
-        return pointsPerGame;
+    public  Position getPosition() {
+        return position;
     }
 
-    public void setPointsPerGame(int pointsPerGame) {
-        this.pointsPerGame = pointsPerGame;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

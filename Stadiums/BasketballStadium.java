@@ -1,10 +1,6 @@
 package Proiect_PAO.Stadiums;
 
-import Proiect_PAO.Matches.BasketballMatch;
 import Proiect_PAO.Surfaces.BasketballSurface;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BasketballStadium extends Stadium{
     private BasketballSurface surfaceType;//maybe change to enum

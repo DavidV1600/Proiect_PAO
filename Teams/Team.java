@@ -7,7 +7,6 @@ import java.util.*;
 public class Team implements Comparable<Team>{
     private String name;
     private Set<Player> players;
-
     private int wins;
 
     public Team(String name) {
@@ -63,9 +62,21 @@ public class Team implements Comparable<Team>{
     }
 
     public static Team createTeamFromInput(Scanner scanner){
-        System.out.println("Enter team name: ");
+        System.out.print("Enter team name: ");
         String teamName = scanner.nextLine();
-        return new Team(teamName);
+        Team newTeam = new Team(teamName);
+        System.out.print("Enter number of players in the team: ");
+        int playersNumber = scanner.nextInt();
+        scanner.nextLine();
+        for(int i=1; i<=playersNumber; ++i){
+            System.out.print(i + ". Enter name for player: ");
+            String playerName = scanner.nextLine();
+            System.out.print("Enter age for the player: ");
+            int playerAge = scanner.nextInt();
+            scanner.nextLine();
+            newTeam.addPlayer(new Player(playerName, playerAge));
+        }
+        return newTeam;
     }
 
     @Override
@@ -76,6 +87,13 @@ public class Team implements Comparable<Team>{
             return -1;
         } else {
             return this.name.compareTo(o.name);//if their score is equal then sort them alphabetically
+        }
+    }
+    public void displayMembers() {
+        int index = 1;
+        for(Player player : players){
+            System.out.println(index + ". " + player.getName());
+            index++;
         }
     }
 }

@@ -26,19 +26,26 @@ public class Match {
         this.teamB = teamB;
         this.dateTime = dateTime;
         this.stadium = stadium;
+        this.teamAScore = -1;
+        this.teamBScore = -1;
     }
 
     public Match(Team teamA, Team teamB) {
         this.teamA = teamA;
         this.teamB = teamB;
+        this.teamAScore = -1;
+        this.teamBScore = -1;
     }
 
     @Override
     public String toString() {
-        return  teamA.getName() +
-                " -VS- " +
-                teamB.getName() +
-                "\nDate: " + dateTime;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(teamA.getName()).append(" -VS- ").append(teamB.getName());
+        if(teamAScore != -1 && teamBScore == -1){
+            stringBuilder.append("\n").append(teamAScore).append(" - ").append(teamBScore);
+        }
+        stringBuilder.append("\nDate: ").append(dateTime);
+        return stringBuilder.toString();
     }
 
     public LocalDateTime getDateTime() {
