@@ -1,4 +1,6 @@
-package Proiect_PAO.Stadiums;
+package Proiect_PAO.Services;
+
+import Proiect_PAO.Stadiums.Stadium;
 
 import java.util.ArrayList;
 import java.util.List;

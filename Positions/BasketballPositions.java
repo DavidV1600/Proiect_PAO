@@ -1,4 +1,4 @@
-package Proiect_PAO;
+package Proiect_PAO.Positions;
 
 public enum BasketballPositions {
     POINT_GUARD(1, "Point Guard"),

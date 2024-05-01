@@ -1,5 +1,6 @@
-package Proiect_PAO.Matches;
+package Proiect_PAO.Services;
 
+import Proiect_PAO.Matches.Match;
 import Proiect_PAO.Stadiums.Stadium;
 import Proiect_PAO.Teams.Team;
 

@@ -1,4 +1,4 @@
-package Proiect_PAO;
+package Proiect_PAO.Positions;
 
 public enum FootballPositions {
     GOALKEEPER(1, "Goalkeeper"),
