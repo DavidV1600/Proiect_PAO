@@ -3,8 +3,8 @@ package Proiect_PAO.Teams;
 public class FootballTeam extends Team {
     private String coachName;
 
-    public FootballTeam(String name, int tournamentId, String coachName) {
-        super(name, tournamentId);
+    public FootballTeam(int id, String name, int tournamentId, String coachName) {
+        super(id, name, tournamentId);
         this.coachName = coachName;
     }
 

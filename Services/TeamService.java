@@ -15,6 +15,8 @@ public class TeamService {
 
     private TeamService() {
         teams = new ArrayList<>();
+
+        loadTeamsFromDatabase();
     }
 
     public static TeamService getInstance() {
@@ -34,7 +36,7 @@ public class TeamService {
     }
 
     private void insertTeamIntoDatabase(Team team) {
-        String query = "INSERT INTO Teams (name) VALUES ('" + team.getName() + "')";
+        String query = "INSERT INTO Teams (name) VALUES ('" + team.getId() + "', " + team.getName() + "', " + team.getWins() + "', " + team.getTournamentId() + "')";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
@@ -51,6 +53,23 @@ public class TeamService {
         deleteTeamFromDatabase(team);
     }
 
+    private void loadTeamsFromDatabase() {
+        String query = "SELECT * FROM Teams";
+        try {
+            ResultSet resultSet = DatabaseManager.executeQuery(query);
+            while (resultSet.next()) {
+                String teamName = resultSet.getString("name");
+                int teamId = resultSet.getInt("id");
+                //int wins = resultSet.getInt("wins");
+                int tournamentId = resultSet.getInt("tournament_id");
+                // Create a tournament object and add it to the list
+                teams.add(new Team(teamId, teamName, tournamentId));
+            }
+            CsvWriterService.writeCsv("load_tournaments_from_database");
+        } catch (SQLException e) {
+            System.out.println("Error loading tournaments from the database: " + e.getMessage());
+        }
+    }
     public void deleteTeamFromDatabase(Team team) {
         String query = "DELETE FROM Teams WHERE name = '" + team.getName() + "'";
         try {
@@ -69,7 +88,7 @@ public class TeamService {
             CsvWriterService.writeCsv("get_teams");
             while (resultSet.next()) {
                 String teamName = resultSet.getString("name");
-                allTeams.add(new Team(teamName));
+                allTeams.add(new Team(1, teamName, 2));//tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

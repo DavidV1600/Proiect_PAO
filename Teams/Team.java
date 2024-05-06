@@ -1,16 +1,20 @@
 package Proiect_PAO.Teams;
 
 import Proiect_PAO.Players.Player;
+import Proiect_PAO.Services.PlayerService;
+import Proiect_PAO.Services.TeamService;
 
 import java.util.*;
 
 public class Team implements Comparable<Team> {
+  private int id;
   private String name;
   private Set<Player> players;
   private int wins;
   private int tournamentId; // New field to store the tournament ID
 
-  public Team(String name, int tournamentId) {
+  public Team(int id, String name, int tournamentId) {
+    this.id = id;
     this.name = name;
     this.tournamentId = tournamentId;
     this.players = new TreeSet<>();
@@ -70,14 +74,11 @@ public class Team implements Comparable<Team> {
   public void setTournamentId(int tournamentId) {
     this.tournamentId = tournamentId;
   }
-
-  public static Team createTeamFromInput(Scanner scanner) {
+  public static Team createTeamFromInput(int teamId, Scanner scanner, int tournamentId) {
     System.out.print("Enter team name: ");
     String teamName = scanner.nextLine();
-    System.out.print("Enter tournament ID: ");
-    int tournamentId = scanner.nextInt();
     scanner.nextLine(); // Consume newline
-    Team newTeam = new Team(teamName, tournamentId);
+    Team newTeam = new Team(teamId, teamName, tournamentId);
     System.out.print("Enter number of players in the team: ");
     int playersNumber = scanner.nextInt();
     scanner.nextLine(); // Consume newline
@@ -87,8 +88,11 @@ public class Team implements Comparable<Team> {
       System.out.print("Enter age for the player: ");
       int playerAge = scanner.nextInt();
       scanner.nextLine(); // Consume newline
-      newTeam.addPlayer(new Player(playerName, playerAge, 2));
+      Player newPlayer = new Player(playerName, playerAge, teamId);
+      newTeam.addPlayer(newPlayer);
+      PlayerService.getInstance().addPlayer(newPlayer);
     }
+    TeamService.getInstance().addTeam(newTeam);
     return newTeam;
   }
 
@@ -109,5 +113,13 @@ public class Team implements Comparable<Team> {
       System.out.println(index + ". " + player.getName());
       index++;
     }
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 }

@@ -16,6 +16,8 @@ public class PlayerService {
     // Private constructor to prevent instantiation from outside
     private PlayerService() {
         players = new ArrayList<>();
+
+        loadPlayersFromDatabase();
     }
 
     // Method to get the singleton instance
@@ -26,6 +28,22 @@ public class PlayerService {
         return instance;
     }
 
+    private void loadPlayersFromDatabase() {
+        String query = "SELECT * FROM Tournaments";
+        try {
+            ResultSet resultSet = DatabaseManager.executeQuery(query);
+            while (resultSet.next()) {
+                String playerName = resultSet.getString("name");
+                int age = resultSet.getInt("age");
+                int teamId = resultSet.getInt("team_id");
+        // Create a tournament object and add it to the list
+                players.add(new Player(playerName, age, teamId));
+            }
+            CsvWriterService.writeCsv("load_tournaments_from_database");
+        } catch (SQLException e) {
+            System.out.println("Error loading tournaments from the database: " + e.getMessage());
+        }
+    }
     public void addPlayer(Player player) {
         players.add(player);
         // Log the action in CSV
@@ -36,7 +54,7 @@ public class PlayerService {
     }
 
     private void insertPlayerIntoDatabase(Player player) {
-        String query = "INSERT INTO Players (name, age) VALUES ('" + player.getName() + "', " + player.getAge() + ")";
+        String query = "INSERT INTO Players (name, age) VALUES ('" + player.getName() + "', " + player.getAge() + "', " + player.getTeamId() + ")";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
@@ -53,7 +71,7 @@ public class PlayerService {
             if (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                return new Player(playerName, playerAge);
+                return new Player(playerName, playerAge, 1);//tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
@@ -72,7 +90,7 @@ public class PlayerService {
             while (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                allPlayers.add(new Player(playerName, playerAge));
+                allPlayers.add(new Player(playerName, playerAge, 1)); //tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

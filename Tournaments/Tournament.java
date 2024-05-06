@@ -7,29 +7,29 @@ import java.util.*;
 
 public class Tournament<T extends Team, M extends Match> {
     private String name;
-    private int tournamentId; // New field for the tournament ID
+    private int id;
     private List<T> teams;
     private List<M> matches;
 
-    public Tournament(String name, int tournamentId) {
+    public Tournament(String name, int id) {
         this.name = name;
-        this.tournamentId = tournamentId;
+        this.id = id;
         this.teams = new ArrayList<>();
         this.matches = new ArrayList<>();
     }
 
     public void addTeam(T team) {
-        team.setTournamentId(tournamentId); // Set the tournament ID for the team
+        team.setTournamentId(id); // Set the tournament ID for the team
         teams.add(team);
     }
 
     // Getter and setter for tournament ID
-    public int getTournamentId() {
-        return tournamentId;
+    public int getId() {
+        return id;
     }
 
-    public void setTournamentId(int tournamentId) {
-        this.tournamentId = tournamentId;
+    public void setId(int id) {
+        this.id = id;
     }
     public void addMatch(M match) {
         matches.add(match);

@@ -17,8 +17,8 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-    // ActionsManager manager = ActionsManager.getInstance();
-    // manager.startMenu();
+    ActionsManager manager = ActionsManager.getInstance();
+    manager.startMenu();
 
     //
     //        String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -40,13 +40,6 @@ public class Main {
     //        } catch (SQLException e) {
     //            System.out.println("A apărut o eroare de conexiune: " + e.getMessage());
     //        }
-
-        TournamentService tournamentService = TournamentService.getInstance();
-        //tournamentService.addTournament("turneu1");
-        List<Tournament> tournaments = tournamentService.getAllTournaments();
-        for(Tournament tournament : tournaments){
-            System.out.println(tournament);
-        }
     }
 }
 

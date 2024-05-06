@@ -17,6 +17,8 @@ public class TournamentService<T extends Team, M extends Match> {
 
     private TournamentService() {
         tournaments = new ArrayList<>();
+
+        loadTournamentsFromDatabase();
     }
 
     public static TournamentService getInstance() {
@@ -26,6 +28,21 @@ public class TournamentService<T extends Team, M extends Match> {
         return instance;
     }
 
+    private void loadTournamentsFromDatabase() {
+        String query = "SELECT * FROM Tournaments";
+        try {
+            ResultSet resultSet = DatabaseManager.executeQuery(query);
+            while (resultSet.next()) {
+                String tournamentName = resultSet.getString("name");
+                int tournamentId = resultSet.getInt("id");
+                // Create a tournament object and add it to the list
+                tournaments.add(new Tournament<>(tournamentName, tournamentId));
+            }
+            CsvWriterService.writeCsv("load_tournaments_from_database");
+        } catch (SQLException e) {
+            System.out.println("Error loading tournaments from the database: " + e.getMessage());
+        }
+    }
     public void addTournament(Tournament<T, M> tournament) {
         tournaments.add(tournament);
         // Log the action in CSV
@@ -36,7 +53,7 @@ public class TournamentService<T extends Team, M extends Match> {
     }
 
     private void insertTournamentIntoDatabase(Tournament<T, M> tournament) {
-        String query = "INSERT INTO Tournaments (name) VALUES ('" + tournament.getName() + "')";
+        String query = "INSERT INTO Tournaments (name, tournament_id) VALUES ('" + tournament.getName() + "', '" + tournament.getId() + "')";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
