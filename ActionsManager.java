@@ -3,7 +3,7 @@ package Proiect_PAO;
 import Proiect_PAO.Matches.Match;
 import Proiect_PAO.Teams.Team;
 import Proiect_PAO.Tournaments.Tournament;
-import Proiect_PAO.Tournaments.TournamentService;
+import Proiect_PAO.Services.TournamentService;
 
 import java.util.Scanner;
 

@@ -3,7 +3,9 @@ package Proiect_PAO;
 import Proiect_PAO.Players.Player;
 import Proiect_PAO.Services.PlayerService;
 import Proiect_PAO.Services.TeamService;
+import Proiect_PAO.Services.TournamentService;
 import Proiect_PAO.Teams.Team;
+import Proiect_PAO.Tournaments.Tournament;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -39,10 +41,11 @@ public class Main {
     //            System.out.println("A apărut o eroare de conexiune: " + e.getMessage());
     //        }
 
-        TeamService teamService = TeamService.getInstance();
-        List<Team> teams = teamService.getAllTeams();
-        for(Team team : teams){
-            System.out.println(team);
+        TournamentService tournamentService = TournamentService.getInstance();
+        //tournamentService.addTournament("turneu1");
+        List<Tournament> tournaments = tournamentService.getAllTournaments();
+        for(Tournament tournament : tournaments){
+            System.out.println(tournament);
         }
     }
 }

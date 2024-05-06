@@ -8,9 +8,11 @@ public class Team implements Comparable<Team> {
   private String name;
   private Set<Player> players;
   private int wins;
+  private int tournamentId; // New field to store the tournament ID
 
-  public Team(String name) {
+  public Team(String name, int tournamentId) {
     this.name = name;
+    this.tournamentId = tournamentId;
     this.players = new TreeSet<>();
     wins = 0;
   }
@@ -61,20 +63,31 @@ public class Team implements Comparable<Team> {
     this.wins++;
   }
 
+  public int getTournamentId() {
+    return tournamentId;
+  }
+
+  public void setTournamentId(int tournamentId) {
+    this.tournamentId = tournamentId;
+  }
+
   public static Team createTeamFromInput(Scanner scanner) {
     System.out.print("Enter team name: ");
     String teamName = scanner.nextLine();
-    Team newTeam = new Team(teamName);
+    System.out.print("Enter tournament ID: ");
+    int tournamentId = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+    Team newTeam = new Team(teamName, tournamentId);
     System.out.print("Enter number of players in the team: ");
     int playersNumber = scanner.nextInt();
-    scanner.nextLine();
+    scanner.nextLine(); // Consume newline
     for (int i = 1; i <= playersNumber; ++i) {
       System.out.print(i + ". Enter name for player: ");
       String playerName = scanner.nextLine();
       System.out.print("Enter age for the player: ");
       int playerAge = scanner.nextInt();
-      scanner.nextLine();
-      newTeam.addPlayer(new Player(playerName, playerAge));//aici poate sa pun id-ul echipei pentru care joaca
+      scanner.nextLine(); // Consume newline
+      newTeam.addPlayer(new Player(playerName, playerAge));
     }
     return newTeam;
   }

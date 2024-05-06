@@ -3,8 +3,8 @@ package Proiect_PAO.Teams;
 public class BasketballTeam extends Team {
     private int totalPoints;
 
-    public BasketballTeam(String name, int totalPoints) {
-        super(name);
+    public BasketballTeam(String name, int tournamentId, int totalPoints) {
+        super(name, tournamentId);
         this.totalPoints = totalPoints;
     }
 

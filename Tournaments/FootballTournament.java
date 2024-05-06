@@ -7,12 +7,11 @@ public class FootballTournament extends Tournament<FootballTeam, FootballMatch> 
     private String location;
     private String organizer;
 
-    public FootballTournament(String name, String location, String organizer) {
-        super(name);
+    public FootballTournament(String name, int tournamentId, String location, String organizer) {
+        super(name, tournamentId);
         this.location = location;
         this.organizer = organizer;
     }
-
     public String getLocation() {
         return location;
     }

@@ -7,8 +7,8 @@ public class BasketballTournament extends Tournament<BasketballTeam, BasketballM
     private String type;
     private String sponsor;
 
-    public BasketballTournament(String name, String type, String sponsor) {
-        super(name);
+    public BasketballTournament(String name, int tournamentId, String type, String sponsor) {
+        super(name, tournamentId);
         this.type = type;
         this.sponsor = sponsor;
     }
