@@ -71,7 +71,7 @@ public class TournamentService<T extends Team, M extends Match> {
             CsvWriterService.writeCsv("get_tournaments");
             while (resultSet.next()) {
                 String tournamentName = resultSet.getString("name");
-                allTournaments.add(new Tournament<>(tournamentName));
+                allTournaments.add(new Tournament<>(tournamentName,1));
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

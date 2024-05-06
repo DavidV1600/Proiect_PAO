@@ -98,7 +98,7 @@ public class ActionsManager {
     private void addTournament(Scanner scanner) {
         System.out.print("Enter tournament name: ");
         String name = scanner.nextLine();
-        Tournament<Team, Match> tournament = new Tournament<>(name);
+        Tournament<Team, Match> tournament = new Tournament<>(name,1);
         tournamentService.addTournament(tournament);
         System.out.println("Tournament added successfully.");
     }

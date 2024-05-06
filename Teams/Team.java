@@ -87,7 +87,7 @@ public class Team implements Comparable<Team> {
       System.out.print("Enter age for the player: ");
       int playerAge = scanner.nextInt();
       scanner.nextLine(); // Consume newline
-      newTeam.addPlayer(new Player(playerName, playerAge));
+      newTeam.addPlayer(new Player(playerName, playerAge, 2));
     }
     return newTeam;
   }
