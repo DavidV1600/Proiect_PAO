@@ -1,10 +1,13 @@
 package Proiect_PAO;
 
 import Proiect_PAO.Matches.Match;
+import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
 import Proiect_PAO.Tournaments.Tournament;
 import Proiect_PAO.Services.TournamentService;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ActionsManager {
@@ -22,7 +25,7 @@ public class ActionsManager {
         return instance;
     }
 
-    public void startMenu() {
+    public void startMenu() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         int option;
 
@@ -94,16 +97,50 @@ public class ActionsManager {
         System.out.println("0. Exit");
         System.out.println("================\n");
     }
+    private int generateNewTournamentId() {
+        // Get all existing tournaments
+        List<Tournament<Team, Match>> allTournaments = tournamentService.getAllTournaments();
+
+        // Find the maximum ID among existing tournaments
+        int maxId = 0;
+        for (Tournament<Team, Match> tournament : allTournaments) {
+            int currentId = tournament.getId(); // Assuming tournament names start with 'T' followed by an ID
+            if (currentId > maxId) {
+                maxId = currentId;
+            }
+        }
+
+        // Increment the maximum ID to get the new ID
+        return maxId + 1;
+    }
+
+    private int generateNewTeamId() {
+        // Get all existing tournaments
+        List<Team> allTeams = TeamService.getInstance().getAllTeams();
+
+        // Find the maximum ID among existing tournaments
+        int maxId = 0;
+        for (Team team : allTeams) {
+            int currentId = team.getId(); // Assuming tournament names start with 'T' followed by an ID
+            if (currentId > maxId) {
+                maxId = currentId;
+            }
+        }
+
+        // Increment the maximum ID to get the new ID
+        return maxId + 1;
+    }
 
     private void addTournament(Scanner scanner) {
         System.out.print("Enter tournament name: ");
         String name = scanner.nextLine();
-        Tournament<Team, Match> tournament = new Tournament<>(name,1);
+        int tournamentId = generateNewTournamentId();
+        Tournament<Team, Match> tournament = new Tournament<>(name,tournamentId);//tre modifict
         tournamentService.addTournament(tournament);
         System.out.println("Tournament added successfully.");
     }
 
-    private void deleteTournament(Scanner scanner) {
+    private void deleteTournament(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name to delete: ");
         String name = scanner.nextLine();
         if (tournamentService.deleteTournamentByName(name)) {
@@ -115,16 +152,10 @@ public class ActionsManager {
 
     private void updateTournament(Scanner scanner) {//name for now
         System.out.print("Enter tournament name to update: ");
-        String name = scanner.nextLine();
-        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(name);
-        if (tournament != null) {
-            System.out.println("Enter new tournament name: ");
-            String newName = scanner.nextLine();
-            tournament.setName(newName);
-            System.out.println("Tournament details updated successfully.");
-        } else {
-            System.out.println("Tournament not found.");
-        }
+        String oldName = scanner.nextLine();
+        System.out.print("Enter new tournament name: ");
+        String newName = scanner.nextLine();
+        tournamentService.updateTournamentName(oldName, newName);
     }
 
     private void addTeamToTournament(Scanner scanner) {
@@ -132,14 +163,15 @@ public class ActionsManager {
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
-            tournament.addTeam(Team.createTeamFromInput(scanner));
+            int teamId = generateNewTeamId();
+            tournament.addTeam(Team.createTeamFromInput(teamId, scanner, tournament.getId()));
             System.out.println("Team added to tournament successfully.");
         } else {
             System.out.println("Tournament not found.");
         }
     }
 
-    private void removeTeamFromTournament(Scanner scanner) {
+    private void removeTeamFromTournament(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
@@ -197,7 +229,7 @@ public class ActionsManager {
         tournamentService.displayAllTournaments();
     }
 
-    private void generateMatches(Scanner scanner){
+    private void generateMatches(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
@@ -208,7 +240,7 @@ public class ActionsManager {
         }
     }
 
-    private void playTournaments(Scanner scanner){
+    private void playTournaments(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);

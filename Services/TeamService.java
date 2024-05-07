@@ -3,6 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.CsvWriterService;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Teams.Team;
+import Proiect_PAO.Tournaments.Tournament;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,14 +30,16 @@ public class TeamService {
     public void addTeam(Team team) {
         teams.add(team);
         // Log the action in CSV
+        //insertTeamIntoDatabase(team);
         CsvWriterService.writeCsv("add_team");
 
         // Insert the team into the database
-        insertTeamIntoDatabase(team);
+
     }
 
-    private void insertTeamIntoDatabase(Team team) {
-        String query = "INSERT INTO Teams (name) VALUES ('" + team.getId() + "', " + team.getName() + "', " + team.getWins() + "', " + team.getTournamentId() + "')";
+    public void insertTeamIntoDatabase(Team team) {
+        String query = "INSERT INTO Teams (id, name, wins, tournament_id) VALUES ('" + team.getId() + "', '" +
+                team.getName() + "', '" + team.getWins() + "', '" + team.getTournamentId() + "')";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
@@ -44,13 +47,17 @@ public class TeamService {
         }
     }
 
-    public void removeTeam(Team team) {
+    public void removeTeam(Team team) throws SQLException {
+
+        PlayerService.getInstance().removePlayersFromTeam(team);
+        MatchService.getInstance().removeMatchFromTeam(team);
         teams.remove(team);
         // Log the action in CSV
+        deleteTeamFromDatabase(team);
         CsvWriterService.writeCsv("remove_team");
 
         // Delete the team from the database
-        deleteTeamFromDatabase(team);
+
     }
 
     private void loadTeamsFromDatabase() {
@@ -70,8 +77,16 @@ public class TeamService {
             System.out.println("Error loading tournaments from the database: " + e.getMessage());
         }
     }
+
+    public void removeTeamsFromTournament(Tournament tournament) throws SQLException {
+        for(Team team: teams) {
+            if(team.getTournamentId() == tournament.getId()) {
+                removeTeam(team);
+            }
+        }
+    }
     public void deleteTeamFromDatabase(Team team) {
-        String query = "DELETE FROM Teams WHERE name = '" + team.getName() + "'";
+        String query = "DELETE FROM Teams WHERE id = '" + team.getId() + "'";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
@@ -94,5 +109,22 @@ public class TeamService {
             System.out.println("Error executing query: " + e.getMessage());
         }
         return allTeams;
+    }
+    public void updateTeamWinsInDatabase(Team team) {
+        String query = "UPDATE Teams SET wins = '" + team.getWins() + "' WHERE id = '" + team.getId() + "'";
+        try {
+            DatabaseManager.executeQuery(query);
+            CsvWriterService.writeCsv("team_updated");
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+        }
+    }
+    private Team getTeamById(int teamId) {
+        for (Team team : teams) {
+            if (team.getId() == teamId) {
+                return team;
+            }
+        }
+        return null;
     }
 }

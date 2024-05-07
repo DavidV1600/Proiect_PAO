@@ -1,14 +1,24 @@
 package Proiect_PAO.Players;
 
-public class Player implements Comparable<Player>{
+public class Player implements Comparable<Player> {
+    private int id; // New field to store the player ID
     private String name;
     private int age;
     private int teamId; // New field to store the team ID
 
-    public Player(String name, int age, int teamId) {
+    public Player(int id, String name, int age, int teamId) {
+        this.id = id;
         this.name = name;
         this.age = age;
         this.teamId = teamId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -37,7 +47,8 @@ public class Player implements Comparable<Player>{
 
     @Override
     public String toString() {
-        return "Name: " + name +
+        return "ID: " + id +
+                "\nName: " + name +
                 "\nAge: " + age;
     }
 

@@ -1,8 +1,12 @@
 package Proiect_PAO.Tournaments;
 
 import Proiect_PAO.Matches.Match;
+import Proiect_PAO.Services.MatchService;
+import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
 
+
+import java.sql.SQLException;
 import java.util.*;
 
 public class Tournament<T extends Team, M extends Match> {
@@ -69,13 +73,14 @@ public class Tournament<T extends Team, M extends Match> {
         return stringBuilder.toString();
     }
 
-    public void generateMatches() {
+    public void generateMatches() throws SQLException {
         matches.clear();
 
         for (int i = 0; i < teams.size(); i++) {
             for (int j = i + 1; j < teams.size(); j++) {
                 M match = (M) new Match(teams.get(i), teams.get(j));
                 matches.add(match);
+                MatchService.getInstance().addMatch(match);
             }
         }
     }
@@ -86,16 +91,6 @@ public class Tournament<T extends Team, M extends Match> {
     }
 
     public void printStandings() {
-        for (M match : matches) {
-            T homeTeam = (T) match.getTeamA();
-            T awayTeam = (T) match.getTeamB();
-            if (match.getTeamAScore() > match.getTeamBScore()) {
-                homeTeam.incrementWins();
-            } else if (match.getTeamBScore() > match.getTeamAScore()) {
-                awayTeam.incrementWins();
-            }
-        }
-
         Collections.sort(teams);
         Collections.reverse(teams);
 
@@ -107,13 +102,14 @@ public class Tournament<T extends Team, M extends Match> {
         }
     }
 
-    public boolean removeTeam(Scanner scanner) {
+    public boolean removeTeam(Scanner scanner) throws SQLException {
         System.out.println("Enter team name to be removed: ");
         String teamName = scanner.nextLine();
         Iterator<T> iterator = teams.iterator();
         while (iterator.hasNext()) {
             T team = iterator.next();
             if (team.getName().equals(teamName)) {
+                TeamService.getInstance().removeTeam(team);
                 iterator.remove();
                 return true;
             }
@@ -135,15 +131,24 @@ public class Tournament<T extends Team, M extends Match> {
         }
     }
 
-    public void playMatches(Scanner scanner){
+    public void playMatches(Scanner scanner) throws SQLException {
         for(M match : matches){
             System.out.println(match);
-            System.out.println("Add score for " + match.getTeamA().getName());
+            System.out.print("Add score for " + match.getTeamA().getName() + ": ");
             int scoreA = scanner.nextInt();
-            System.out.println("Add score for " + match.getTeamB().getName());
+            System.out.print("Add score for " + match.getTeamB().getName() + ": ");
             int scoreB = scanner.nextInt();
             match.setTeamAScore(scoreA);
             match.setTeamBScore(scoreB);
+            MatchService.getInstance().updateMatch(match);
+            if(scoreA >= scoreB){//= is for now unhandled case
+                match.getTeamA().incrementWins();
+                TeamService.getInstance().updateTeamWinsInDatabase(match.getTeamA());
+            }
+            else {
+                match.getTeamB().incrementWins();
+                TeamService.getInstance().updateTeamWinsInDatabase(match.getTeamB());
+            }
         }
     }
 

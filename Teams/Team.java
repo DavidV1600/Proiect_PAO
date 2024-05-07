@@ -77,8 +77,9 @@ public class Team implements Comparable<Team> {
   public static Team createTeamFromInput(int teamId, Scanner scanner, int tournamentId) {
     System.out.print("Enter team name: ");
     String teamName = scanner.nextLine();
-    scanner.nextLine(); // Consume newline
+    //scanner.nextLine(); // Consume newline
     Team newTeam = new Team(teamId, teamName, tournamentId);
+    TeamService.getInstance().insertTeamIntoDatabase(newTeam);
     System.out.print("Enter number of players in the team: ");
     int playersNumber = scanner.nextInt();
     scanner.nextLine(); // Consume newline
@@ -88,7 +89,8 @@ public class Team implements Comparable<Team> {
       System.out.print("Enter age for the player: ");
       int playerAge = scanner.nextInt();
       scanner.nextLine(); // Consume newline
-      Player newPlayer = new Player(playerName, playerAge, teamId);
+      int playerId = PlayerService.getInstance().getNextPlayerId();
+      Player newPlayer = new Player(playerId, playerName, playerAge, teamId);
       newTeam.addPlayer(newPlayer);
       PlayerService.getInstance().addPlayer(newPlayer);
     }

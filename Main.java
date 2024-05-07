@@ -1,18 +1,6 @@
 package Proiect_PAO;
 
-import Proiect_PAO.Players.Player;
-import Proiect_PAO.Services.PlayerService;
-import Proiect_PAO.Services.TeamService;
-import Proiect_PAO.Services.TournamentService;
-import Proiect_PAO.Teams.Team;
-import Proiect_PAO.Tournaments.Tournament;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {

@@ -2,22 +2,24 @@ package Proiect_PAO.Services;
 
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Players.Player;
+import Proiect_PAO.CsvWriterService;
+import Proiect_PAO.Teams.Team;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import Proiect_PAO.CsvWriterService;
 
 public class PlayerService {
     private static PlayerService instance;
     private List<Player> players;
+    private int nextPlayerId; // Next available player ID
 
-    // Private constructor to prevent instantiation from outside
     private PlayerService() {
         players = new ArrayList<>();
-
         loadPlayersFromDatabase();
+        // Determine the next available player ID based on existing players
+        nextPlayerId = players.isEmpty() ? 1 : players.stream().mapToInt(Player::getId).max().getAsInt() + 1;
     }
 
     // Method to get the singleton instance
@@ -29,32 +31,35 @@ public class PlayerService {
     }
 
     private void loadPlayersFromDatabase() {
-        String query = "SELECT * FROM Tournaments";
+        String query = "SELECT * FROM Players";
         try {
             ResultSet resultSet = DatabaseManager.executeQuery(query);
             while (resultSet.next()) {
+                int id = resultSet.getInt("id");
                 String playerName = resultSet.getString("name");
                 int age = resultSet.getInt("age");
                 int teamId = resultSet.getInt("team_id");
-        // Create a tournament object and add it to the list
-                players.add(new Player(playerName, age, teamId));
+                players.add(new Player(id, playerName, age, teamId));
             }
-            CsvWriterService.writeCsv("load_tournaments_from_database");
+            CsvWriterService.writeCsv("load_players_from_database");
         } catch (SQLException e) {
-            System.out.println("Error loading tournaments from the database: " + e.getMessage());
+            System.out.println("Error loading players from the database: " + e.getMessage());
         }
     }
-    public void addPlayer(Player player) {
-        players.add(player);
-        // Log the action in CSV
-        CsvWriterService.writeCsv("add_player");
 
-        // Insert the player into the database
+    public void addPlayer(Player player) {
+        player.setId(nextPlayerId); // Assign the next available ID to the player
+        players.add(player);
         insertPlayerIntoDatabase(player);
+        CsvWriterService.writeCsv("add_player");
+        // Increment the next player ID for future additions
+        nextPlayerId++;
     }
 
     private void insertPlayerIntoDatabase(Player player) {
-        String query = "INSERT INTO Players (name, age) VALUES ('" + player.getName() + "', " + player.getAge() + "', " + player.getTeamId() + ")";
+        String query = "INSERT INTO Players (id, name, age, team_id) VALUES (" +
+                player.getId() + ", '" + player.getName() + "', " +
+                player.getAge() + ", " + player.getTeamId() + ")";
         try {
             DatabaseManager.executeQuery(query);
         } catch (SQLException e) {
@@ -62,8 +67,8 @@ public class PlayerService {
         }
     }
 
-    public Player getPlayerByName(String name) {
-        String query = "SELECT * FROM Players WHERE name = '" + name + "'";
+    public Player getPlayerById(int id) {
+        String query = "SELECT * FROM Players WHERE id = '" + id + "'";
         try {
             ResultSet resultSet = DatabaseManager.executeQuery(query);
 
@@ -71,7 +76,7 @@ public class PlayerService {
             if (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                return new Player(playerName, playerAge, 1);//tre modificat
+                return new Player(id, playerName, playerAge, 1);//tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
@@ -90,7 +95,7 @@ public class PlayerService {
             while (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                allPlayers.add(new Player(playerName, playerAge, 1)); //tre modificat
+                allPlayers.add(new Player(nextPlayerId, playerName, playerAge, 1)); //tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
@@ -98,8 +103,8 @@ public class PlayerService {
         return allPlayers;
     }
 
-    public void updatePlayer(String oldName, Player newPlayer) {
-        String query = "UPDATE Players SET name = '" + newPlayer.getName() + "', age = " + newPlayer.getAge() + "' WHERE name = '" + oldName + "'";
+    public void updatePlayer(int id, Player newPlayer) {
+        String query = "UPDATE Players SET name = '" + newPlayer.getName() + "', age = " + newPlayer.getAge() + "' WHERE id = '" + id + "'";
         try {
             DatabaseManager.executeQuery(query);
             // Log the action in CSV
@@ -109,8 +114,14 @@ public class PlayerService {
         }
     }
 
-    public void removePlayer(String name) {
-        String query = "DELETE FROM Players WHERE name = '" + name + "'";
+    public void removePlayer(Player player){
+        deleteTeamFromDatabase(player);
+        players.remove(player);
+        // Log the action in CSV
+        CsvWriterService.writeCsv("player_removed");
+    }
+    private void deleteTeamFromDatabase(Player player) {
+        String query = "DELETE FROM Players WHERE id = '" + player.getName() + "'";
         try {
             DatabaseManager.executeQuery(query);
             // Log the action in CSV
@@ -118,5 +129,23 @@ public class PlayerService {
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
         }
+    }
+
+    public void removePlayersFromTeam(Team team) {
+        for(Player player : players) {
+            if(player.getTeamId() == team.getId()){
+                removePlayer(player);
+            }
+        }
+    }
+
+    public int getNextPlayerId() {
+        int maxId = 0;
+        for (Player player : players) {
+            if (player.getId() > maxId) {
+                maxId = player.getId();
+            }
+        }
+        return maxId + 1;
     }
 }
