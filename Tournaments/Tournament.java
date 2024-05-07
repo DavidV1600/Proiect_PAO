@@ -103,7 +103,7 @@ public class Tournament<T extends Team, M extends Match> {
     }
 
     public boolean removeTeam(Scanner scanner) throws SQLException {
-        System.out.println("Enter team name to be removed: ");
+        System.out.print("Enter team name to be removed: ");
         String teamName = scanner.nextLine();
         Iterator<T> iterator = teams.iterator();
         while (iterator.hasNext()) {

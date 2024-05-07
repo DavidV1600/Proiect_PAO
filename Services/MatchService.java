@@ -7,6 +7,7 @@ import Proiect_PAO.Players.Player;
 import Proiect_PAO.Stadiums.Stadium;
 import Proiect_PAO.Teams.Team;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MatchService {
     // Private constructor to prevent instantiation from outside
     private MatchService() {
         this.matches = new ArrayList<>();
+        loadMatchesFromDatabase();
     }
 
     // Method to get the singleton instance
@@ -28,6 +30,28 @@ public class MatchService {
             instance = new MatchService();
         }
         return instance;
+    }
+
+    private void loadMatchesFromDatabase() {
+        String query = "SELECT * FROM Matches";
+        try {
+            ResultSet resultSet = DatabaseManager.executeQuery(query);
+            while (resultSet.next()) {
+                int teamAId = resultSet.getInt("team1_id");
+                int teamBId = resultSet.getInt("team2_id");
+                int teamAScore = resultSet.getInt("team1_score");
+                int teamBScore = resultSet.getInt("team2_score");
+                Team teamA = TeamService.getInstance().getTeamById(teamAId);
+                Team teamB = TeamService.getInstance().getTeamById(teamBId);
+                Match match = new Match(teamA, teamB);
+                match.setTeamAScore(teamAScore);
+                match.setTeamBScore(teamBScore);
+                matches.add(match);
+            }
+            CsvWriterService.writeCsv("load_matches_from_database");
+        } catch (SQLException e) {
+            System.out.println("Error loading matches from the database: " + e.getMessage());
+        }
     }
 
     public void createMatch(Team teamA, Team teamB, LocalDateTime dateTime, Stadium stadium) throws SQLException {
@@ -99,13 +123,16 @@ public class MatchService {
     }
 
     public void removeMatchFromTeam(Team team) throws SQLException {
-        for(Match match: matches) {
-            if(match.getTeamA().getId() == team.getId() || match.getTeamB().getId() == team.getId()){
-                matches.remove(match);
+        Iterator<Match> iterator = matches.iterator();
+        while (iterator.hasNext()) {
+            Match match = iterator.next();
+            if (match.getTeamA().getId() == team.getId() || match.getTeamB().getId() == team.getId()) {
+                iterator.remove(); // Use iterator's remove method to avoid ConcurrentModificationException
                 deleteMatchFromDatabase(match);
             }
         }
     }
+
 
 
 }

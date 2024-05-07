@@ -28,6 +28,18 @@ public class TournamentService<T extends Team, M extends Match> {
     return instance;
   }
 
+  public static void setInstance(TournamentService instance) {
+    TournamentService.instance = instance;
+  }
+
+  public List<Tournament<T, M>> getTournaments() {
+    return tournaments;
+  }
+
+  public void setTournaments(List<Tournament<T, M>> tournaments) {
+    this.tournaments = tournaments;
+  }
+
   private void loadTournamentsFromDatabase() {
     String query = "SELECT * FROM Tournaments";
     try {
@@ -113,8 +125,9 @@ public class TournamentService<T extends Team, M extends Match> {
     for (Tournament<T, M> tournament : tournaments) {
       if (tournament.getName().equals(name)) {
         TeamService.getInstance().removeTeamsFromTournament(tournament);
-        tournaments.remove(tournament);
         deleteTournamentFromDatabase(tournament);
+        tournaments.remove(tournament);
+
         return true;
       }
     }

@@ -115,13 +115,13 @@ public class PlayerService {
     }
 
     public void removePlayer(Player player){
-        deleteTeamFromDatabase(player);
+        deletePlayerFromDatabase(player);
         players.remove(player);
         // Log the action in CSV
         CsvWriterService.writeCsv("player_removed");
     }
-    private void deleteTeamFromDatabase(Player player) {
-        String query = "DELETE FROM Players WHERE id = '" + player.getName() + "'";
+    private void deletePlayerFromDatabase(Player player) {
+        String query = "DELETE FROM Players WHERE id = '" + player.getId() + "'";
         try {
             DatabaseManager.executeQuery(query);
             // Log the action in CSV
@@ -132,12 +132,17 @@ public class PlayerService {
     }
 
     public void removePlayersFromTeam(Team team) {
+        List<Player> playersToRemove = new ArrayList<>();
         for(Player player : players) {
             if(player.getTeamId() == team.getId()){
-                removePlayer(player);
+                playersToRemove.add(player);
             }
         }
+        for(Player player : playersToRemove) {
+            removePlayer(player);
+        }
     }
+
 
     public int getNextPlayerId() {
         int maxId = 0;

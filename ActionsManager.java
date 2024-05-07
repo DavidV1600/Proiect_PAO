@@ -1,6 +1,9 @@
 package Proiect_PAO;
 
 import Proiect_PAO.Matches.Match;
+import Proiect_PAO.Players.Player;
+import Proiect_PAO.Services.MatchService;
+import Proiect_PAO.Services.PlayerService;
 import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
 import Proiect_PAO.Tournaments.Tournament;
@@ -13,11 +16,69 @@ import java.util.Scanner;
 public class ActionsManager {
     private static ActionsManager instance = null;
     private final TournamentService<Team, Match> tournamentService;
+    private final TeamService teamService;
+    private final PlayerService playerService;
+    private final MatchService matchService;
 
     private ActionsManager() {
         tournamentService = TournamentService.getInstance();
+        playerService = PlayerService.getInstance();
+        teamService = TeamService.getInstance();
+        matchService = MatchService.getInstance();
+        setupTournaments();
     }
 
+    private void setupTournaments() {
+        for(Tournament tournament : tournamentService.getTournaments()){
+            setupTournament(tournament);
+        }
+    }
+    private void setupTournament(Tournament<Team, Match> tournament) {
+        // Add teams to the tournament
+        addTeamsToTournament(tournament);
+
+        // Add players to each team
+        List<Team> teams = tournament.getTeams();
+        for (Team team : teams) {
+            addPlayersToTeam(team);
+        }
+
+        // Generate matches between teams
+        addMatchesFromTournament(tournament);
+    }
+    private void addPlayersToTeam(Team team) {
+        // Retrieve players from the database or user input
+        List<Player> players = playerService.getAllPlayers(); // Example: Assuming you have a method to get all players
+
+        // Add players to the team
+        for (Player player : players) {
+            if (player.getTeamId() == team.getId())
+                team.addPlayer(player);
+        }
+    }
+
+    private void addMatchesFromTournament(Tournament<Team, Match> tournament) {
+        // Get teams assigned to the tournament
+        List<Team> teams = tournament.getTeams();
+
+        // Generate matches between teams
+        for (Match match : matchService.getAllMatches()){
+            if(match.getTeamA().getTournamentId() == tournament.getId())
+                tournament.addMatch(match);
+        }
+    }
+
+    private void addTeamsToTournament(Tournament<Team, Match> tournament) {
+        // Retrieve teams from the database or user input
+        List<Team> teams = teamService.getTeams(); // Example: Assuming you have a method to get all teams
+
+        // Assign teams to the tournament
+        for (Team team : teams) {
+            if (team.getTournamentId() == tournament.getId()) {
+                tournament.addTeam(team);
+            }
+        }
+    }
     public static ActionsManager getInstance() {
         if (instance == null) {
             instance = new ActionsManager();

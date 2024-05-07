@@ -8,6 +8,7 @@ import Proiect_PAO.Tournaments.Tournament;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TeamService {
@@ -25,6 +26,18 @@ public class TeamService {
             instance = new TeamService();
         }
         return instance;
+    }
+
+    public static void setInstance(TeamService instance) {
+        TeamService.instance = instance;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 
     public void addTeam(Team team) {
@@ -48,17 +61,22 @@ public class TeamService {
     }
 
     public void removeTeam(Team team) throws SQLException {
-
         PlayerService.getInstance().removePlayersFromTeam(team);
         MatchService.getInstance().removeMatchFromTeam(team);
-        teams.remove(team);
-        // Log the action in CSV
         deleteTeamFromDatabase(team);
+
+        Iterator<Team> iterator = teams.iterator();
+        while (iterator.hasNext()) {
+            Team t = iterator.next();
+            if (t.equals(team)) {
+                iterator.remove();
+            }
+        }
+
+        // Log the action in CSV
         CsvWriterService.writeCsv("remove_team");
-
-        // Delete the team from the database
-
     }
+
 
     private void loadTeamsFromDatabase() {
         String query = "SELECT * FROM Teams";
@@ -79,12 +97,16 @@ public class TeamService {
     }
 
     public void removeTeamsFromTournament(Tournament tournament) throws SQLException {
-        for(Team team: teams) {
-            if(team.getTournamentId() == tournament.getId()) {
+        Iterator<Team> iterator = teams.iterator();
+        while (iterator.hasNext()) {
+            Team team = iterator.next();
+            if (team.getTournamentId() == tournament.getId()) {
+                iterator.remove(); // Use iterator's remove method to avoid ConcurrentModificationException
                 removeTeam(team);
             }
         }
     }
+
     public void deleteTeamFromDatabase(Team team) {
         String query = "DELETE FROM Teams WHERE id = '" + team.getId() + "'";
         try {
@@ -119,7 +141,7 @@ public class TeamService {
             System.out.println("Error executing query: " + e.getMessage());
         }
     }
-    private Team getTeamById(int teamId) {
+    public Team getTeamById(int teamId) {
         for (Team team : teams) {
             if (team.getId() == teamId) {
                 return team;

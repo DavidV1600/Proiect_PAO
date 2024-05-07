@@ -36,7 +36,6 @@ public class Match {
         this.teamAScore = -1;
         this.teamBScore = -1;
     }
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
