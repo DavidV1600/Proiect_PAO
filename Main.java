@@ -1,10 +1,13 @@
 package Proiect_PAO;
 
-public class Main {
-    public static void main(String[] args) {
+import java.sql.SQLException;
 
-        ActionsManager manager = ActionsManager.getInstance();
-        manager.startMenu();
+public class Main {
+    public static void main(String[] args) throws SQLException {
+
+    ActionsManager manager = ActionsManager.getInstance();
+    manager.startMenu();
+
     }
 }
 

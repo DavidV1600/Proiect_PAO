@@ -1,20 +1,85 @@
 package Proiect_PAO;
 
 import Proiect_PAO.Matches.Match;
+import Proiect_PAO.Players.Player;
+import Proiect_PAO.Services.MatchService;
+import Proiect_PAO.Services.PlayerService;
+import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
+import Proiect_PAO.Teams.TeamImpl;
 import Proiect_PAO.Tournaments.Tournament;
-import Proiect_PAO.Tournaments.TournamentService;
+import Proiect_PAO.Services.TournamentService;
+import Proiect_PAO.Tournaments.TournamentImpl;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ActionsManager {
     private static ActionsManager instance = null;
     private final TournamentService<Team, Match> tournamentService;
+    private final TeamService teamService;
+    private final PlayerService playerService;
+    private final MatchService matchService;
 
     private ActionsManager() {
         tournamentService = TournamentService.getInstance();
+        playerService = PlayerService.getInstance();
+        teamService = TeamService.getInstance();
+        matchService = MatchService.getInstance();
+        setupTournaments();
     }
 
+    private void setupTournaments() {
+        for(Tournament tournament : tournamentService.getTournaments()){
+            setupTournament(tournament);
+        }
+    }
+    private void setupTournament(Tournament<Team, Match> tournament) {
+        // Add teams to the tournament
+        addTeamsToTournament(tournament);
+
+        // Add players to each team
+        List<Team> teams = tournament.getTeams();
+        if (teams != null) {
+            for (Team team : teams) {
+                addPlayersToTeam(team);
+            }
+        }
+
+        // Generate matches between teams
+        addMatchesFromTournament(tournament);
+    }
+    private void addPlayersToTeam(Team team) {
+        // Retrieve players from the database or user input
+        List<Player> players = playerService.getAllPlayers(); // Example: Assuming you have a method to get all players
+
+    // Add players to the team
+        if (players != null) {
+            for (Player player : players) {
+                if (player.getTeamId() == team.getId()) team.addPlayer(player);
+            }
+        }
+    }
+
+    private void addMatchesFromTournament(Tournament<Team, Match> tournament) {
+        for (Match match : matchService.getAllMatches()){
+            if(match.getTeamA().getTournamentId() == tournament.getId())
+                tournament.addMatch(match);
+        }
+    }
+
+    private void addTeamsToTournament(Tournament<Team, Match> tournament) {
+        // Retrieve teams from the database or user input
+        List<Team> teams = teamService.getTeams();
+
+        // Assign teams to the tournament
+        for (Team team : teams) {
+            if (team.getTournamentId() == tournament.getId()) {
+                tournament.addTeam(team);
+            }
+        }
+    }
     public static ActionsManager getInstance() {
         if (instance == null) {
             instance = new ActionsManager();
@@ -22,7 +87,7 @@ public class ActionsManager {
         return instance;
     }
 
-    public void startMenu() {
+    public void startMenu() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         int option;
 
@@ -66,6 +131,8 @@ public class ActionsManager {
                 case 11:
                     playTournaments(scanner);
                     break;
+                case 12:
+                    updateTeam(scanner);
                 case 0:
                     System.out.println("Application closed.");
                     break;
@@ -91,19 +158,50 @@ public class ActionsManager {
         System.out.println("9. Display tournaments");
         System.out.println("10. Generate matches for tournaments");
         System.out.println("11. Play tournaments");
+        System.out.println("12. Update Team");
         System.out.println("0. Exit");
         System.out.println("================\n");
+    }
+    private int generateNewTournamentId() {
+        // Get all existing tournaments
+        List<Tournament<Team, Match>> allTournaments = tournamentService.getAllTournaments();
+
+        // Find the maximum ID among existing tournaments
+        int maxId = 0;
+        for (Tournament<Team, Match> tournament : allTournaments) {
+            int currentId = tournament.getId();
+            if (currentId > maxId) {
+                maxId = currentId;
+            }
+        }
+        return maxId + 1;
+    }
+
+    private int generateNewTeamId() {
+        // Get all existing tournaments
+        List<Team> allTeams = TeamService.getInstance().getAllTeams();
+
+        int maxId = 0;
+        for (Team team : allTeams) {
+            int currentId = team.getId();
+            if (currentId > maxId) {
+                maxId = currentId;
+            }
+        }
+
+        return maxId + 1;
     }
 
     private void addTournament(Scanner scanner) {
         System.out.print("Enter tournament name: ");
         String name = scanner.nextLine();
-        Tournament<Team, Match> tournament = new Tournament<>(name);
+        int tournamentId = generateNewTournamentId();
+        Tournament<Team, Match> tournament = new TournamentImpl<>(name,tournamentId);
         tournamentService.addTournament(tournament);
         System.out.println("Tournament added successfully.");
     }
 
-    private void deleteTournament(Scanner scanner) {
+    private void deleteTournament(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name to delete: ");
         String name = scanner.nextLine();
         if (tournamentService.deleteTournamentByName(name)) {
@@ -115,16 +213,10 @@ public class ActionsManager {
 
     private void updateTournament(Scanner scanner) {//name for now
         System.out.print("Enter tournament name to update: ");
-        String name = scanner.nextLine();
-        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(name);
-        if (tournament != null) {
-            System.out.println("Enter new tournament name: ");
-            String newName = scanner.nextLine();
-            tournament.setName(newName);
-            System.out.println("Tournament details updated successfully.");
-        } else {
-            System.out.println("Tournament not found.");
-        }
+        String oldName = scanner.nextLine();
+        System.out.print("Enter new tournament name: ");
+        String newName = scanner.nextLine();
+        tournamentService.updateTournamentName(oldName, newName);
     }
 
     private void addTeamToTournament(Scanner scanner) {
@@ -132,14 +224,15 @@ public class ActionsManager {
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
-            tournament.addTeam(Team.createTeamFromInput(scanner));
+            int teamId = generateNewTeamId();
+            tournament.addTeam(TeamImpl.createTeamFromInput(teamId, scanner, tournament.getId()));
             System.out.println("Team added to tournament successfully.");
         } else {
             System.out.println("Tournament not found.");
         }
     }
 
-    private void removeTeamFromTournament(Scanner scanner) {
+    private void removeTeamFromTournament(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
@@ -197,7 +290,7 @@ public class ActionsManager {
         tournamentService.displayAllTournaments();
     }
 
-    private void generateMatches(Scanner scanner){
+    private void generateMatches(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
@@ -208,7 +301,7 @@ public class ActionsManager {
         }
     }
 
-    private void playTournaments(Scanner scanner){
+    private void playTournaments(Scanner scanner) throws SQLException {
         System.out.print("Enter tournament name: ");
         String tournamentName = scanner.nextLine();
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
@@ -219,5 +312,11 @@ public class ActionsManager {
         }
     }
 
+    private void updateTeam(Scanner scanner) {
+        System.out.print("Enter tournament name:");
+        String tournamentName = scanner.nextLine();
+        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
+        tournament.updateTeams(scanner);
+    }
 }
 
