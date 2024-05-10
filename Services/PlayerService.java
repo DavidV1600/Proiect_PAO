@@ -3,6 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Players.Player;
 import Proiect_PAO.CsvWriterService;
+import Proiect_PAO.Players.PlayerLogic;
 import Proiect_PAO.Teams.Team;
 
 import java.sql.ResultSet;
@@ -39,7 +40,7 @@ public class PlayerService {
                 String playerName = resultSet.getString("name");
                 int age = resultSet.getInt("age");
                 int teamId = resultSet.getInt("team_id");
-                players.add(new Player(id, playerName, age, teamId));
+                players.add(new PlayerLogic(id, playerName, age, teamId));
             }
             CsvWriterService.writeCsv("load_players_from_database");
         } catch (SQLException e) {
@@ -76,7 +77,7 @@ public class PlayerService {
             if (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                return new Player(id, playerName, playerAge, 1);//tre modificat
+                return new PlayerLogic(id, playerName, playerAge, 1);//tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
@@ -95,7 +96,7 @@ public class PlayerService {
             while (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                allPlayers.add(new Player(nextPlayerId, playerName, playerAge, 1)); //tre modificat
+                allPlayers.add(new PlayerLogic(nextPlayerId, playerName, playerAge, 1)); //tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

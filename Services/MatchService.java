@@ -3,8 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.CsvWriterService;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Matches.Match;
-import Proiect_PAO.Players.Player;
-import Proiect_PAO.Stadiums.Stadium;
+import Proiect_PAO.Matches.MatchLogic;
 import Proiect_PAO.Teams.Team;
 
 import java.sql.ResultSet;
@@ -43,7 +42,7 @@ public class MatchService {
                 int teamBScore = resultSet.getInt("team2_score");
                 Team teamA = TeamService.getInstance().getTeamById(teamAId);
                 Team teamB = TeamService.getInstance().getTeamById(teamBId);
-                Match match = new Match(teamA, teamB);
+                Match match = new MatchLogic(teamA, teamB);
                 match.setTeamAScore(teamAScore);
                 match.setTeamBScore(teamBScore);
                 matches.add(match);
@@ -54,8 +53,8 @@ public class MatchService {
         }
     }
 
-    public void createMatch(Team teamA, Team teamB, LocalDateTime dateTime, Stadium stadium) throws SQLException {
-        Match match = new Match(teamA, teamB, dateTime, stadium);
+    public void createMatch(Team teamA, Team teamB, LocalDateTime dateTime) throws SQLException {
+        Match match = new MatchLogic(teamA, teamB, dateTime);
         addMatch(match);
     }
 

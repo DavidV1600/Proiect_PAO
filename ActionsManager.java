@@ -6,8 +6,10 @@ import Proiect_PAO.Services.MatchService;
 import Proiect_PAO.Services.PlayerService;
 import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
+import Proiect_PAO.Teams.TeamLogic;
 import Proiect_PAO.Tournaments.Tournament;
 import Proiect_PAO.Services.TournamentService;
+import Proiect_PAO.Tournaments.TournamentLogic;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -39,8 +41,10 @@ public class ActionsManager {
 
         // Add players to each team
         List<Team> teams = tournament.getTeams();
-        for (Team team : teams) {
-            addPlayersToTeam(team);
+        if (teams != null) {
+            for (Team team : teams) {
+                addPlayersToTeam(team);
+            }
         }
 
         // Generate matches between teams
@@ -50,10 +54,11 @@ public class ActionsManager {
         // Retrieve players from the database or user input
         List<Player> players = playerService.getAllPlayers(); // Example: Assuming you have a method to get all players
 
-        // Add players to the team
-        for (Player player : players) {
-            if (player.getTeamId() == team.getId())
-                team.addPlayer(player);
+    // Add players to the team
+        if (players != null) {
+            for (Player player : players) {
+                if (player.getTeamId() == team.getId()) team.addPlayer(player);
+            }
         }
     }
 
@@ -70,7 +75,7 @@ public class ActionsManager {
 
     private void addTeamsToTournament(Tournament<Team, Match> tournament) {
         // Retrieve teams from the database or user input
-        List<Team> teams = teamService.getTeams(); // Example: Assuming you have a method to get all teams
+        List<Team> teams = teamService.getTeams();
 
         // Assign teams to the tournament
         for (Team team : teams) {
@@ -196,7 +201,7 @@ public class ActionsManager {
         System.out.print("Enter tournament name: ");
         String name = scanner.nextLine();
         int tournamentId = generateNewTournamentId();
-        Tournament<Team, Match> tournament = new Tournament<>(name,tournamentId);//tre modifict
+        Tournament<Team, Match> tournament = new TournamentLogic<>(name,tournamentId);//tre modificat
         tournamentService.addTournament(tournament);
         System.out.println("Tournament added successfully.");
     }
@@ -225,7 +230,7 @@ public class ActionsManager {
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
             int teamId = generateNewTeamId();
-            tournament.addTeam(Team.createTeamFromInput(teamId, scanner, tournament.getId()));
+            tournament.addTeam(TeamLogic.createTeamFromInput(teamId, scanner, tournament.getId()));
             System.out.println("Team added to tournament successfully.");
         } else {
             System.out.println("Tournament not found.");

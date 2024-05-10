@@ -3,6 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.CsvWriterService;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Teams.Team;
+import Proiect_PAO.Teams.TeamLogic;
 import Proiect_PAO.Tournaments.Tournament;
 
 import java.sql.ResultSet;
@@ -88,7 +89,7 @@ public class TeamService {
                 //int wins = resultSet.getInt("wins");
                 int tournamentId = resultSet.getInt("tournament_id");
                 // Create a tournament object and add it to the list
-                teams.add(new Team(teamId, teamName, tournamentId));
+                teams.add(new TeamLogic(teamId, teamName, tournamentId));
             }
             CsvWriterService.writeCsv("load_tournaments_from_database");
         } catch (SQLException e) {
@@ -125,7 +126,10 @@ public class TeamService {
             CsvWriterService.writeCsv("get_teams");
             while (resultSet.next()) {
                 String teamName = resultSet.getString("name");
-                allTeams.add(new Team(1, teamName, 2));//tre modificat
+                int teamId = resultSet.getInt("id");
+                int tournamentId = resultSet.getInt("tournament_id");
+
+                allTeams.add(new TeamLogic(teamId, teamName, tournamentId));//tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
