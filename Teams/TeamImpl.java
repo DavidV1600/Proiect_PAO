@@ -1,7 +1,7 @@
 package Proiect_PAO.Teams;
 
 import Proiect_PAO.Players.Player;
-import Proiect_PAO.Players.PlayerLogic;
+import Proiect_PAO.Players.PlayerImpl;
 import Proiect_PAO.Services.PlayerService;
 import Proiect_PAO.Services.TeamService;
 
@@ -9,14 +9,14 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class TeamLogic implements Team {
-    private int id;
-    private String name;
-    private Set<Player> players;
+public class TeamImpl implements Team {
+    private final int id;
+    private final String name;
+    private final Set<Player> players;
     private int wins;
     private int tournamentId; // New field to store the tournament ID
 
-    public TeamLogic(int id, String name, int tournamentId) {
+    public TeamImpl(int id, String name, int tournamentId) {
         this.id = id;
         this.name = name;
         this.tournamentId = tournamentId;
@@ -30,38 +30,13 @@ public class TeamLogic implements Team {
     }
 
     @Override
-    public void removePlayer(Player player) {
-        players.remove(player);
-    }
-
-    @Override
-    public Set<Player> getPlayers() {
-        return players;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void setPlayers(Set<Player> players) {
-        this.players = players;
-    }
-
-    @Override
     public int getWins() {
         return wins;
-    }
-
-    @Override
-    public void setWins(int wins) {
-        this.wins = wins;
     }
 
     @Override
@@ -93,16 +68,11 @@ public class TeamLogic implements Team {
         return id;
     }
 
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
     // Implementing the createTeamFromInput method
     public static Team createTeamFromInput(int teamId, Scanner scanner, int tournamentId) {
         System.out.print("Enter team name: ");
         String teamName = scanner.nextLine();
-        Team newTeam = new TeamLogic(teamId, teamName, tournamentId);
+        Team newTeam = new TeamImpl(teamId, teamName, tournamentId);
         TeamService.getInstance().insertTeamIntoDatabase(newTeam);
         System.out.print("Enter number of players in the team: ");
         int playersNumber = scanner.nextInt();
@@ -114,7 +84,7 @@ public class TeamLogic implements Team {
             int playerAge = scanner.nextInt();
             scanner.nextLine(); // Consume newline
             int playerId = PlayerService.getInstance().getNextPlayerId();
-            Player newPlayer = new PlayerLogic(playerId, playerName, playerAge, teamId);
+            Player newPlayer = new PlayerImpl(playerId, playerName, playerAge, teamId);
             newTeam.addPlayer(newPlayer);
             PlayerService.getInstance().addPlayer(newPlayer);
         }

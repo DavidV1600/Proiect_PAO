@@ -1,12 +1,12 @@
 package Proiect_PAO.Players;
 
-public class PlayerLogic implements Player {
+public class PlayerImpl implements Player {
     private int id;
-    private String name;
-    private int age;
-    private int teamId;
+    private final String name;
+    private final int age;
+    private final int teamId;
 
-    public PlayerLogic(int id, String name, int age, int teamId) {
+    public PlayerImpl(int id, String name, int age, int teamId) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -29,28 +29,13 @@ public class PlayerLogic implements Player {
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
     public int getAge() {
         return age;
     }
 
     @Override
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    @Override
     public int getTeamId() {
         return teamId;
-    }
-
-    @Override
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
     }
 
     @Override

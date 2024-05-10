@@ -11,14 +11,11 @@ public class CsvWriterService {
 
     public static void writeCsv(String actionName) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(CSV_FILE_PATH, true))) {
-            // Obține timestamp-ul curent
             LocalDateTime timestamp = LocalDateTime.now();
-            // Formatează timestamp-ul într-un format specific (de exemplu, "yyyy-MM-dd HH:mm:ss")
             String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            // Scrie înregistrarea în fișierul CSV
             writer.println(actionName + "," + formattedTimestamp);
         } catch (IOException e) {
-            System.out.println("A apărut o eroare la scrierea în fișierul CSV: " + e.getMessage());
+            System.out.println("An error has occurred while trying to write to file: " + e.getMessage());
         }
     }
 }

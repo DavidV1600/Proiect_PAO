@@ -6,10 +6,10 @@ import Proiect_PAO.Services.MatchService;
 import Proiect_PAO.Services.PlayerService;
 import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
-import Proiect_PAO.Teams.TeamLogic;
+import Proiect_PAO.Teams.TeamImpl;
 import Proiect_PAO.Tournaments.Tournament;
 import Proiect_PAO.Services.TournamentService;
-import Proiect_PAO.Tournaments.TournamentLogic;
+import Proiect_PAO.Tournaments.TournamentImpl;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -63,10 +63,6 @@ public class ActionsManager {
     }
 
     private void addMatchesFromTournament(Tournament<Team, Match> tournament) {
-        // Get teams assigned to the tournament
-        List<Team> teams = tournament.getTeams();
-
-        // Generate matches between teams
         for (Match match : matchService.getAllMatches()){
             if(match.getTeamA().getTournamentId() == tournament.getId())
                 tournament.addMatch(match);
@@ -170,13 +166,11 @@ public class ActionsManager {
         // Find the maximum ID among existing tournaments
         int maxId = 0;
         for (Tournament<Team, Match> tournament : allTournaments) {
-            int currentId = tournament.getId(); // Assuming tournament names start with 'T' followed by an ID
+            int currentId = tournament.getId();
             if (currentId > maxId) {
                 maxId = currentId;
             }
         }
-
-        // Increment the maximum ID to get the new ID
         return maxId + 1;
     }
 
@@ -184,16 +178,14 @@ public class ActionsManager {
         // Get all existing tournaments
         List<Team> allTeams = TeamService.getInstance().getAllTeams();
 
-        // Find the maximum ID among existing tournaments
         int maxId = 0;
         for (Team team : allTeams) {
-            int currentId = team.getId(); // Assuming tournament names start with 'T' followed by an ID
+            int currentId = team.getId();
             if (currentId > maxId) {
                 maxId = currentId;
             }
         }
 
-        // Increment the maximum ID to get the new ID
         return maxId + 1;
     }
 
@@ -201,7 +193,7 @@ public class ActionsManager {
         System.out.print("Enter tournament name: ");
         String name = scanner.nextLine();
         int tournamentId = generateNewTournamentId();
-        Tournament<Team, Match> tournament = new TournamentLogic<>(name,tournamentId);//tre modificat
+        Tournament<Team, Match> tournament = new TournamentImpl<>(name,tournamentId);
         tournamentService.addTournament(tournament);
         System.out.println("Tournament added successfully.");
     }
@@ -230,7 +222,7 @@ public class ActionsManager {
         Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
         if (tournament != null) {
             int teamId = generateNewTeamId();
-            tournament.addTeam(TeamLogic.createTeamFromInput(teamId, scanner, tournament.getId()));
+            tournament.addTeam(TeamImpl.createTeamFromInput(teamId, scanner, tournament.getId()));
             System.out.println("Team added to tournament successfully.");
         } else {
             System.out.println("Tournament not found.");

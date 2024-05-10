@@ -5,7 +5,7 @@ import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Matches.Match;
 import Proiect_PAO.Teams.Team;
 import Proiect_PAO.Tournaments.Tournament;
-import Proiect_PAO.Tournaments.TournamentLogic;
+import Proiect_PAO.Tournaments.TournamentImpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TournamentService<T extends Team, M extends Match> {
   private static TournamentService instance;
-  private List<Tournament<T, M>> tournaments;
+  private final List<Tournament<T, M>> tournaments;
 
   private TournamentService() {
     tournaments = new ArrayList<>();
@@ -29,16 +29,8 @@ public class TournamentService<T extends Team, M extends Match> {
     return instance;
   }
 
-  public static void setInstance(TournamentService instance) {
-    TournamentService.instance = instance;
-  }
-
   public List<Tournament<T, M>> getTournaments() {
     return tournaments;
-  }
-
-  public void setTournaments(List<Tournament<T, M>> tournaments) {
-    this.tournaments = tournaments;
   }
 
   private void loadTournamentsFromDatabase() {
@@ -49,7 +41,7 @@ public class TournamentService<T extends Team, M extends Match> {
         String tournamentName = resultSet.getString("name");
         int tournamentId = resultSet.getInt("id");
         // Create a tournament object and add it to the list
-        tournaments.add(new TournamentLogic<>(tournamentName, tournamentId));
+        tournaments.add(new TournamentImpl<>(tournamentName, tournamentId));
       }
       CsvWriterService.writeCsv("load_tournaments_from_database");
     } catch (SQLException e) {
@@ -80,15 +72,6 @@ public class TournamentService<T extends Team, M extends Match> {
     }
   }
 
-  public void removeTournament(Tournament<T, M> tournament) {
-    tournaments.remove(tournament);
-    // Log the action in CSV
-    CsvWriterService.writeCsv("remove_tournament");
-
-    // Delete the tournament from the database
-    deleteTournamentFromDatabase(tournament);
-  }
-
   private void deleteTournamentFromDatabase(Tournament<T, M> tournament) {
     String query = "DELETE FROM Tournaments WHERE name = '" + tournament.getName() + "'";
     try {
@@ -107,7 +90,7 @@ public class TournamentService<T extends Team, M extends Match> {
       CsvWriterService.writeCsv("get_tournaments");
       while (resultSet.next()) {
         String tournamentName = resultSet.getString("name");
-        allTournaments.add(new TournamentLogic<>(tournamentName, 1));
+        allTournaments.add(new TournamentImpl<>(tournamentName, 1));
       }
     } catch (SQLException e) {
       System.out.println("Error executing query: " + e.getMessage());

@@ -1,22 +1,21 @@
 package Proiect_PAO.Tournaments;
 
 import Proiect_PAO.Matches.Match;
-import Proiect_PAO.Matches.MatchLogic;
+import Proiect_PAO.Matches.MatchImpl;
 import Proiect_PAO.Services.MatchService;
 import Proiect_PAO.Services.TeamService;
 import Proiect_PAO.Teams.Team;
-import Proiect_PAO.Teams.TeamLogic;
 
 import java.sql.SQLException;
 import java.util.*;
 
-public class TournamentLogic<T extends Team, M extends Match> implements Tournament<T, M> {
+public class TournamentImpl<T extends Team, M extends Match> implements Tournament<T, M> {
     private String name;
-    private int id;
+    private final int id;
     private List<T> teams;
-    private List<M> matches;
+    private final List<M> matches;
 
-    public TournamentLogic(String name, int id) {
+    public TournamentImpl(String name, int id) {
         this.name = name;
         this.id = id;
         teams = new ArrayList<>();
@@ -30,10 +29,6 @@ public class TournamentLogic<T extends Team, M extends Match> implements Tournam
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void addMatch(M match) {
@@ -56,31 +51,17 @@ public class TournamentLogic<T extends Team, M extends Match> implements Tournam
         this.teams = teams;
     }
 
-    public List<M> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(List<M> matches) {
-        this.matches = matches;
-    }
-
     @Override
     public void generateMatches() throws SQLException {
         matches.clear();
 
         for (int i = 0; i < teams.size(); i++) {
             for (int j = i + 1; j < teams.size(); j++) {
-                M match = (M) new MatchLogic(teams.get(i), teams.get(j));
+                M match = (M) new MatchImpl(teams.get(i), teams.get(j));
                 matches.add(match);
                 MatchService.getInstance().addMatch(match);
             }
         }
-    }
-
-    @Override
-    public void setMatchScore(M match, int teamAScore, int teamBScore) {
-        match.setTeamAScore(teamAScore);
-        match.setTeamBScore(teamBScore);
     }
 
     @Override
@@ -91,7 +72,7 @@ public class TournamentLogic<T extends Team, M extends Match> implements Tournam
         System.out.println("Standings for Tournament: " + name);
         int rank = 1;
         for (T team : teams) {
-            System.out.println(rank + ". " + (((TeamLogic) team).getName() + " - Wins: " + ((TeamLogic) team).getWins()));
+            System.out.println(rank + ". " + team.getName() + " - Wins: " + team.getWins());
             rank++;
         }
     }
@@ -103,7 +84,7 @@ public class TournamentLogic<T extends Team, M extends Match> implements Tournam
         Iterator<T> iterator = teams.iterator();
         while (iterator.hasNext()) {
             T team = iterator.next();
-            if (((TeamLogic) team).getName().equals(teamName)) {
+            if (team.getName().equals(teamName)) {
                 TeamService.getInstance().removeTeam(team);
                 iterator.remove();
                 return true;
@@ -116,7 +97,7 @@ public class TournamentLogic<T extends Team, M extends Match> implements Tournam
     public void displayTeams() {
         System.out.println("Teams in Tournament '" + name + "':");
         for (T team : teams) {
-            System.out.println("- " + ((TeamLogic) team).getName());
+            System.out.println("- " + team.getName());
         }
     }
 

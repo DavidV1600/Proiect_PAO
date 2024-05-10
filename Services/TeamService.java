@@ -3,7 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.CsvWriterService;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Teams.Team;
-import Proiect_PAO.Teams.TeamLogic;
+import Proiect_PAO.Teams.TeamImpl;
 import Proiect_PAO.Tournaments.Tournament;
 
 import java.sql.ResultSet;
@@ -89,7 +89,7 @@ public class TeamService {
                 //int wins = resultSet.getInt("wins");
                 int tournamentId = resultSet.getInt("tournament_id");
                 // Create a tournament object and add it to the list
-                teams.add(new TeamLogic(teamId, teamName, tournamentId));
+                teams.add(new TeamImpl(teamId, teamName, tournamentId));
             }
             CsvWriterService.writeCsv("load_tournaments_from_database");
         } catch (SQLException e) {
@@ -102,7 +102,7 @@ public class TeamService {
         while (iterator.hasNext()) {
             Team team = iterator.next();
             if (team.getTournamentId() == tournament.getId()) {
-                iterator.remove(); // Use iterator's remove method to avoid ConcurrentModificationException
+                iterator.remove(); // Use iterators remove method to avoid ConcurrentModificationException
                 removeTeam(team);
             }
         }
@@ -129,7 +129,7 @@ public class TeamService {
                 int teamId = resultSet.getInt("id");
                 int tournamentId = resultSet.getInt("tournament_id");
 
-                allTeams.add(new TeamLogic(teamId, teamName, tournamentId));//tre modificat
+                allTeams.add(new TeamImpl(teamId, teamName, tournamentId));
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());

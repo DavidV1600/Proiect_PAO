@@ -3,7 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.CsvWriterService;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Matches.Match;
-import Proiect_PAO.Matches.MatchLogic;
+import Proiect_PAO.Matches.MatchImpl;
 import Proiect_PAO.Teams.Team;
 
 import java.sql.ResultSet;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MatchService {
     private static MatchService instance;
-    private List<Match> matches;
+    private final List<Match> matches;
 
     // Private constructor to prevent instantiation from outside
     private MatchService() {
@@ -42,7 +42,7 @@ public class MatchService {
                 int teamBScore = resultSet.getInt("team2_score");
                 Team teamA = TeamService.getInstance().getTeamById(teamAId);
                 Team teamB = TeamService.getInstance().getTeamById(teamBId);
-                Match match = new MatchLogic(teamA, teamB);
+                Match match = new MatchImpl(teamA, teamB);
                 match.setTeamAScore(teamAScore);
                 match.setTeamBScore(teamBScore);
                 matches.add(match);
@@ -51,11 +51,6 @@ public class MatchService {
         } catch (SQLException e) {
             System.out.println("Error loading matches from the database: " + e.getMessage());
         }
-    }
-
-    public void createMatch(Team teamA, Team teamB, LocalDateTime dateTime) throws SQLException {
-        Match match = new MatchLogic(teamA, teamB, dateTime);
-        addMatch(match);
     }
 
     public void addMatch(Match match) throws SQLException {
@@ -100,18 +95,6 @@ public class MatchService {
                 match.getTeamBScore() + " WHERE team1_id = " + match.getTeamA().getId() + " and " +
                 "team2_id = " + match.getTeamB().getId();
         DatabaseManager.executeQuery(query);
-    }
-
-    public void deleteMatch(int team1_id, int team2_id) throws SQLException {
-        Iterator<Match> iterator = matches.iterator();
-        while (iterator.hasNext()) {
-            Match match = iterator.next();
-            if (match.getTeamA().getId() == team1_id && match.getTeamB().getId() == team2_id) {
-                iterator.remove();
-                deleteMatchFromDatabase(match);
-                break;
-            }
-        }
     }
 
     private void deleteMatchFromDatabase(Match match) throws SQLException {

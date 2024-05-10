@@ -3,7 +3,7 @@ package Proiect_PAO.Services;
 import Proiect_PAO.DatabaseManager;
 import Proiect_PAO.Players.Player;
 import Proiect_PAO.CsvWriterService;
-import Proiect_PAO.Players.PlayerLogic;
+import Proiect_PAO.Players.PlayerImpl;
 import Proiect_PAO.Teams.Team;
 
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PlayerService {
     private static PlayerService instance;
-    private List<Player> players;
+    private final List<Player> players;
     private int nextPlayerId; // Next available player ID
 
     private PlayerService() {
@@ -40,7 +40,7 @@ public class PlayerService {
                 String playerName = resultSet.getString("name");
                 int age = resultSet.getInt("age");
                 int teamId = resultSet.getInt("team_id");
-                players.add(new PlayerLogic(id, playerName, age, teamId));
+                players.add(new PlayerImpl(id, playerName, age, teamId));
             }
             CsvWriterService.writeCsv("load_players_from_database");
         } catch (SQLException e) {
@@ -68,24 +68,6 @@ public class PlayerService {
         }
     }
 
-    public Player getPlayerById(int id) {
-        String query = "SELECT * FROM Players WHERE id = '" + id + "'";
-        try {
-            ResultSet resultSet = DatabaseManager.executeQuery(query);
-
-            CsvWriterService.writeCsv("get_player");
-            if (resultSet.next()) {
-                String playerName = resultSet.getString("name");
-                int playerAge = resultSet.getInt("age");
-                return new PlayerLogic(id, playerName, playerAge, 1);//tre modificat
-            }
-        } catch (SQLException e) {
-            System.out.println("Error executing query: " + e.getMessage());
-        }
-        // Player not found
-        return null;
-    }
-
     public List<Player> getAllPlayers() {
         List<Player> allPlayers = new ArrayList<>();
         String query = "SELECT * FROM Players";
@@ -96,23 +78,12 @@ public class PlayerService {
             while (resultSet.next()) {
                 String playerName = resultSet.getString("name");
                 int playerAge = resultSet.getInt("age");
-                allPlayers.add(new PlayerLogic(nextPlayerId, playerName, playerAge, 1)); //tre modificat
+                allPlayers.add(new PlayerImpl(nextPlayerId, playerName, playerAge, 1)); //tre modificat
             }
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e.getMessage());
         }
         return allPlayers;
-    }
-
-    public void updatePlayer(int id, Player newPlayer) {
-        String query = "UPDATE Players SET name = '" + newPlayer.getName() + "', age = " + newPlayer.getAge() + "' WHERE id = '" + id + "'";
-        try {
-            DatabaseManager.executeQuery(query);
-            // Log the action in CSV
-            CsvWriterService.writeCsv("update_player");
-        } catch (SQLException e) {
-            System.out.println("Error executing query: " + e.getMessage());
-        }
     }
 
     public void removePlayer(Player player){
