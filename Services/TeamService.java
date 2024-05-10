@@ -145,6 +145,16 @@ public class TeamService {
             System.out.println("Error executing query: " + e.getMessage());
         }
     }
+
+    public void updateTeamNameInDatabase(String oldName, String newName) {
+        String query = "UPDATE Teams SET name= '" + newName + "' WHERE name = '" + oldName + "'";
+        try {
+            DatabaseManager.executeQuery(query);
+            CsvWriterService.writeCsv("team_updated");
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e.getMessage());
+        }
+    }
     public Team getTeamById(int teamId) {
         for (Team team : teams) {
             if (team.getId() == teamId) {

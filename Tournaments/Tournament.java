@@ -22,4 +22,5 @@ public interface Tournament<T extends Team, M extends Match> {
     void displayMatches();
     void playMatches(Scanner scanner) throws SQLException;
     void displayTeamsComposition(Scanner scanner);
+    void updateTeams(Scanner scanner);
 }

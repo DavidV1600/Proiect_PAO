@@ -153,4 +153,18 @@ public class TournamentImpl<T extends Team, M extends Match> implements Tourname
             }
         }
     }
+
+    @Override
+    public void updateTeams(Scanner scanner) {
+        displayTeams();
+        System.out.print("Enter team name to be updated: ");
+        String teamName = scanner.nextLine();
+        Iterator<T> iterator = teams.iterator();
+        while (iterator.hasNext()) {
+            T team = iterator.next();
+            if (team.getName().equals(teamName)) {
+                team.updateTeam(scanner);
+            }
+        }
+    }
 }

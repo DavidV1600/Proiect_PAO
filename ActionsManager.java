@@ -131,6 +131,8 @@ public class ActionsManager {
                 case 11:
                     playTournaments(scanner);
                     break;
+                case 12:
+                    updateTeam(scanner);
                 case 0:
                     System.out.println("Application closed.");
                     break;
@@ -156,6 +158,7 @@ public class ActionsManager {
         System.out.println("9. Display tournaments");
         System.out.println("10. Generate matches for tournaments");
         System.out.println("11. Play tournaments");
+        System.out.println("12. Update Team");
         System.out.println("0. Exit");
         System.out.println("================\n");
     }
@@ -309,5 +312,11 @@ public class ActionsManager {
         }
     }
 
+    private void updateTeam(Scanner scanner) {
+        System.out.print("Enter tournament name:");
+        String tournamentName = scanner.nextLine();
+        Tournament<Team, Match> tournament = tournamentService.getTournamentByName(tournamentName);
+        tournament.updateTeams(scanner);
+    }
 }
 

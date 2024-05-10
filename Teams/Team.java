@@ -18,4 +18,5 @@ public interface Team extends Comparable<Team> {
   void displayMembers();
   int getId();
 
+  void updateTeam(Scanner scanner);
 }
