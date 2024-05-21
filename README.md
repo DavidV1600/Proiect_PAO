@@ -24,12 +24,12 @@
 
 ## Tipuri de obiecte:
 
-1. Jucator (+ Jucator baschet, Jucator fotbal) 
-2. Echipa (+ Echipa baschet, Echipa fotbal)
-3. Meci (+ Meci baschet, Meci fotbal)
-4. Stadion (+ Stadion baschet, Stadion fotbal)
+1. Jucator 
+2. Echipa 
+3. Meci 
+4. Stadion 
 5. ActionsManager (clasa singleton pentru control de input al utilizatorului)
-6. Turneu (+ Turneu baschet, Turneu fotbal)
+6. Turneu 
 7. Jucator Service (pentru baza de data locala si gestionarea tuturor jucatorilor)
 8. Echipa Service (pentru baza de data locala si gestionarea tuturor echipelor)
 9. Meci Service (pentru baza de data locala si gestionarea tuturor meciurilor)
